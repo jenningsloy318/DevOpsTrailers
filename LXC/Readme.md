@@ -133,7 +133,7 @@ show host network:
             Interface "veth1MAIFK"
     ovs_version: "2.5.2"
 ```
-### use host interface baased macvlan for lxc network  ##
+### use host interface based macvlan for lxc network  ##
 
 Description:
     
@@ -197,10 +197,10 @@ Description:
     ECDSA key fingerprint is SHA256:NRzsSok6ScaxVYK5XLH7omGMHN6zSvKSe/YNi/fjE6I.
     Are you sure you want to continue connecting (yes/no)?
     ```
-### use macvlan baased macvlan for lxc network (DHCP) ##
+### use macvlan based macvlan for lxc network (DHCP) ##
 Description:
     
-   Use this method, containers stays in the same lan with the host, they get ip address from outside network DHCP servers. using this kind of network, containers can be accessed from the host
+   Use this method, containers stays in the same lan with the host, they get ip address from outside network DHCP servers. using this kind of network, containers can be accessed from the host, just add one additional route.
 
 1. create macvlan interface on host 
 
@@ -221,12 +221,18 @@ Description:
    
     ```
     #lxc profile create macvlan3
+    ```
+    configure this profile
+    ```
     #lxc profile device add  macvlan3 eth0 nic  nictype=macvlan  parent=macvlan3
     #lxc profile device add macvlan3 root 2 path=/ pool=default type=disk
     ```
-    configure the para for this profile
+    or configure the para for this profile
 
+    ```
     # cat macvlan3.yaml|lxc profile edit macvlan3
+    ```
+
     ```yaml
     name: macvlan3
     config:
@@ -293,11 +299,11 @@ Description:
     ECDSA key fingerprint is SHA256:Kxc/tf2OMzln5obD5F8h6WmKtTBum844FmfH2vDdLdY.
     Are you sure you want to continue connecting (yes/no)?
     ```
-### use macvlan baased macvlan for lxc network (Static IP) ##
+### use macvlan based macvlan for lxc network (Static IP) ##
 
 Description:
     
-   Use this method, we can assign the IP individually to a container manually. the parent macvlan is configured with an IP address, the containers created upon this NIC can be accesses through this IP address
+   Use this method, we can assign the IP individually to a container manually. the parent macvlan is configured with an IP address, the containers created upon this NIC can be accesses through this IP address, no additional steps needed
 
 1. create macvlan interface on host 
 
@@ -322,16 +328,20 @@ Description:
 2. create profile for lxc, the container macvlan network interface is created on top of host macvlan3
     ```
     #lxc profile create macvlan3
+    ```
+    configure the profile
+
+    ```
     #lxc profile device add  macvlan3 eth0 nic  nictype=macvlan  parent=macvlan3
     #lxc profile device add macvlan3 root 2 path=/ pool=default type=disk
     ```
-    configure the para for this profile
+    additional  parameters for this profile
 
     ```
     # cat macvlan3.yaml|lxc profile edit macvlan3
     ```
 
-    content of macvlan3.yaml, adding `user.network_mode: link-local` to `config` section, this will disable dhcp for the network
+    Content of macvlan3.yaml, adding `user.network_mode: link-local` to `config` section, this will disable dhcp for the network
     ```yaml
     name: macvlan3
     config:
