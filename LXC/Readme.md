@@ -133,7 +133,7 @@ show host network:
             Interface "veth1MAIFK"
     ovs_version: "2.5.2"
 ```
-### use host interface baased macvlan for lxc network ##
+### use host interface baased macvlan for lxc network  ##
 
 Description:
     
@@ -196,8 +196,8 @@ Description:
     The authenticity of host '192.168.59.136 (192.168.59.136)' can't be established.
     ECDSA key fingerprint is SHA256:NRzsSok6ScaxVYK5XLH7omGMHN6zSvKSe/YNi/fjE6I.
     Are you sure you want to continue connecting (yes/no)?
-```
-### use macvlan baased macvlan for lxc network ##
+    ```
+### use macvlan baased macvlan for lxc network (DHCP) ##
 Description:
     
    Use this method, containers stays in the same lan with the host, they get ip address from outside network DHCP servers. using this kind of network, containers can be accessed from the host
@@ -218,10 +218,29 @@ Description:
 
 
 2. create profile for lxc, the container macvlan network interface is created on top of host macvlan3
+   
     ```
     #lxc profile create macvlan3
     #lxc profile device add  macvlan3 eth0 nic  nictype=macvlan  parent=macvlan3
     #lxc profile device add macvlan3 root 2 path=/ pool=default type=disk
+    ```
+    configure the para for this profile
+
+    # cat macvlan3.yaml|lxc profile edit macvlan3
+    ```yaml
+    name: macvlan3
+    config:
+    description: Profile for creating static IP containers
+    devices:
+      eth0:
+        name: eth0
+        nictype: macvlan
+        parent: macvlan3
+        type: nic
+      root:
+        path: /
+        pool: default
+        type: disk
     ```
 
 3. create lxc container
@@ -273,4 +292,149 @@ Description:
     The authenticity of host '192.168.59.137 (192.168.59.137)' can't be established.
     ECDSA key fingerprint is SHA256:Kxc/tf2OMzln5obD5F8h6WmKtTBum844FmfH2vDdLdY.
     Are you sure you want to continue connecting (yes/no)?
+    ```
+### use macvlan baased macvlan for lxc network (Static IP) ##
+
+Description:
+    
+   Use this method, we can assign the IP individually to a container manually. the parent macvlan is configured with an IP address, the containers created upon this NIC can be accesses through this IP address
+
+1. create macvlan interface on host 
+
+
+    ```
+    #ip link add link ens33 macvlan3 type macvlan mode bridge
+    #ip addr add 10.0.3.1/24 dev macvlan3
+    #ip link set macvlan3 up
+    ```
+
+    or add conf to `/etc/network/interfaces`
+
+    ```
+    auto macvlan3
+    iface macvlan3 inet static
+        address 10.0.3.1
+        netmask 255.255.255.0
+        pre-up ip link add link ens33 macvlan3 type macvlan mode bridge
+    ```
+
+
+2. create profile for lxc, the container macvlan network interface is created on top of host macvlan3
+    ```
+    #lxc profile create macvlan3
+    #lxc profile device add  macvlan3 eth0 nic  nictype=macvlan  parent=macvlan3
+    #lxc profile device add macvlan3 root 2 path=/ pool=default type=disk
+    ```
+    configure the para for this profile
+
+    ```
+    # cat macvlan3.yaml|lxc profile edit macvlan3
+    ```
+
+    content of macvlan3.yaml, adding `user.network_mode: link-local` to `config` section, this will disable dhcp for the network
+    ```yaml
+    name: macvlan3
+    config:
+      user.network_mode: link-local
+    description: Profile for creating static IP containers
+    devices:
+      eth0:
+        name: eth0
+        nictype: macvlan
+        parent: macvlan3
+        type: nic
+      root:
+        path: /
+        pool: default
+        type: disk
+    ```
+
+3. create lxc container, and assigh a static IP address to this container
+
+    ```
+    #lxc  launch ubuntu test3 -p macvlan3
+    ```
+
+    edit container, specify the IP address by adding folloing lines in the `config` section of the container
+    ```yaml
+      raw.lxc: |-
+        lxc.network.ipv4=10.0.3.32
+        lxc.network.ipv4.gateway=10.0.3.1
+    ```
+
+    ```
+    #lxc config edit test3
+    architecture: x86_64
+    config:
+      image.architecture: amd64
+      image.description: ubuntu 16.04 LTS amd64 (release) (20171011)
+      image.label: release
+      image.os: ubuntu
+      image.release: xenial
+      image.serial: "20171011"
+      image.version: "16.04"
+      raw.lxc: |-
+        lxc.network.ipv4=10.0.3.32
+        lxc.network.ipv4.gateway=10.0.3.1
+      volatile.base_image: 61d54418874f2f84e24ddd6934b3bb759ca76cbc49820da7d34f8b5b778e4816
+      volatile.eth0.hwaddr: 00:16:3e:c4:94:9e
+      volatile.idmap.base: "0"
+      volatile.idmap.next: '[{"Isuid":true,"Isgid":false,"Hostid":100000,"Nsid":0,"Maprange":65536},{"Isuid":false,"Isgid":true,"Hostid":100000,    "Nsid":0,"Maprange":65536}]'
+      volatile.last_state.idmap: '[{"Isuid":true,"Isgid":false,"Hostid":100000,"Nsid":0,"Maprange":65536},{"Isuid":false,"Isgid":true,    "Hostid":100000,"Nsid":0,"Maprange":65536}]'
+      volatile.last_state.power: RUNNING
+    devices: {}
+    ephemeral: false
+    profiles:
+    - macvlan3
+    stateful: false
+    description: ""
+    ```
+
+    Get the container info
+    ```
+    #lxc info test3
+      Name: test3
+      Remote: unix://
+      Architecture: x86_64
+      Created: 2017/10/30 03:31 UTC
+      Status: Running
+      Type: persistent
+      Profiles: macvlan3
+      Pid: 2199
+      Ips:
+        lo:   inet    127.0.0.1
+        lo:   inet6   ::1
+        eth0: inet    10.0.3.32
+        eth0: inet6   fe80::216:3eff:fec4:949e
+      Resources:
+        Processes: 24
+        CPU usage:
+          CPU usage (in seconds): 4
+        Memory usage:
+          Memory (current): 102.10MB
+          Memory (peak): 125.60MB
+        Network usage:
+          eth0:
+            Bytes received: 3.34kB
+            Bytes sent: 3.24kB
+            Packets received: 20
+            Packets sent: 26
+          lo:
+            Bytes received: 260B
+            Bytes sent: 260B
+            Packets received: 4
+            Packets sent: 4
+    ```
+
+4. access from host and outside the host (in same lan with the host)
+
+    ```
+    # ping 10.0.3.32
+    PING 10.0.3.32 (10.0.3.32) 56(84) bytes of data.
+    64 bytes from 10.0.3.32: icmp_seq=1 ttl=64 time=0.101 ms
+    64 bytes from 10.0.3.32: icmp_seq=2 ttl=64 time=0.043 ms
+    ^C
+    --- 10.0.3.32 ping statistics ---
+    2 packets transmitted, 2 received, 0% packet loss, time 1009ms
+    rtt min/avg/max/mdev = 0.043/0.072/0.101/0.029 ms
     ```
