@@ -1,5 +1,8 @@
 Description: Now we can use LXD to management the lxc containers, 
 
+General Configuation:
+1. add ssh key into the profile [adding ssh authorized-keys  to lxd profile](https://chrismacnaughton.com/blog/2016/03/23/adding-ssh-authorized-keys-to-lxd-default-profile/)
+
 ## Use bridge via openvswitch for lxc network, so install openvswitch first ##
 
 Description:
