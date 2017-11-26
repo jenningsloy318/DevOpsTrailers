@@ -29,3 +29,5 @@
     - [Maglev](https://research.google.com/pubs/pub44824.html)
     - [MGW](https://tech.meituan.com/MGW.html)
     - [Vortex](http://www.infoq.com/cn/articles/Maglev-Vortex)
+
+5. [Optimizing web servers for high throughput and low latency](https://blogs.dropbox.com/tech/2017/09/optimizing-web-servers-for-high-throughput-and-low-latency/)
