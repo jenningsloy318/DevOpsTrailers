@@ -1,0 +1,109 @@
+#==========================  Modules configuration =============================
+auditbeat.modules:
+- module: audit
+  metricsets: [kernel]
+  kernel.audit_rules: |
+    # Define audit rules here.
+    # Create file watches (-w) or syscall audits (-a or -A). For example:
+    #-w /etc/passwd -p wa -k identity
+    #-a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat,    open_by_handle_at -F exit=-EPERM -k access
+    -a exit,always -F arch=b64   -S execve -k CommandHistory
+    -a exit,always -F arch=b32  -S execve -k CommandHistory
+- module: audit
+  metricsets: [file]
+  file.paths:
+  - /bin
+  - /usr/bin
+  - /sbin
+  - /usr/sbin
+  - /etc
+
+#================================ Processors ===================================
+processors:
+- drop_event:
+    when:
+     and:
+        - equals:
+            metricset.name: "kernel"
+        - equals:
+              audit.kernel.data.tty: "(none)"
+        - not:
+            equals:
+                metricset.name: "file"
+
+- drop_event:
+    when:
+     and:
+        - equals:
+            metricset.name: "kernel"
+        - not:
+            equals:
+              audit.kernel.action: "executed"
+        - not:
+            equals:
+              audit.kernel.action: "logged-in"
+        - not:
+            equals:
+                metricset.name: "file"
+- include_fields:
+    when:
+        and:
+        - equals:
+            metricset.name: "kernel"
+        - equals:
+            audit.kernel.action: "executed"
+        - equals:
+            audit.kernel.key: "CommandHistory"
+        - not:
+            equals:
+              audit.kernel.data.tty: "(none)"
+    fields: ["audit.kernel.action","audit.kernel.actor.attrs.uid","audit.kernel.actor.attrs.auid","audit.kernel.actor.attrs.euid","audit.kernel.data.tty","audit.kernel.data.cwd","audit.kernel.data.cmdline"]
+- include_fields:
+    when:
+        and:
+        - equals:
+            metricset.name: "kernel"
+        - equals:
+            audit.kernel.action: "logged-in"
+    fields: ["audit.kernel.action","audit.kernel.actor.attrs.uid","audit.kernel.actor.attrs.auid","audit.kernel.data.addr","audit.kernel.data.terminal","audit.kernel.data.tty"]
+
+#==================== Elasticsearch template setting    ==========================
+setup.template.settings:
+  index.number_of_shards: 3
+  #index.codec: best_compression
+  #_source.enabled: false
+#============================== Dashboards =====================================
+# These settings control loading the sample dashboards to the Kibana index. Loading
+# the dashboards is disabled by default and can be enabled either by setting the
+# options here, or by using the `-setup` CLI flag or the `setup` command.
+setup.dashboards.enabled: true
+
+# The URL from where to download the dashboards archive. By default this URL
+# has a value which is computed based on the Beat name and version. For released
+# versions, this URL points to the dashboard archive on the artifacts.elastic.co
+# website.
+#setup.dashboards.url:
+
+# The directory from where to read the dashboards. The default is the `kibana`
+# folder in the home path.
+setup.dashboards.directory: ${path.home}/kibana
+#============================== Kibana =====================================
+
+# Starting with Beats version 6.0.0, the dashboards are loaded via the Kibana API.
+# This requires a Kibana endpoint configuration.
+setup.kibana:
+
+  # Kibana Host
+  # Scheme and port can be left out and will be set to the default (http and 5601)
+  # In case you specify and additional path, the scheme is required: http://localhost:5601/path
+  # IPv6 addresses should always be defined as: https://[2001:db8::1]:5601
+  host: "localhost:5601"
+#-------------------------- Elasticsearch output ------------------------------
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: ["localhost:9200"]
+
+  # Optional protocol and basic auth credentials.
+  #protocol: "https"
+  #username: "elastic"
+  #password: "changeme"
