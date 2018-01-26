@@ -40,7 +40,7 @@ audit.rules: is a file containing audit rules that will be loaded by the audit d
         * always:  always create an event
         * never: never create an event
     - Replacing -a with -A in the above command will insert the rule at the top instead of at the bottom.
-    - The **-S** option. This field can either be the syscall name or number,For readability, the name is almost always used, You may give more than one syscall in a rule by specifying another -S option
+    - The **-S** option. This field can either be the syscall name or number,For readability, the name is almost always used, You may give more than one syscall in a rule by specifying another -S option. we can get all syscall from http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/ and https://github.com/torvalds/linux/tree/master/arch/x86/entry/syscalls and https://github.com/thevivekpandey/syscalls-table-64bit
     - The **-F** options that fine tune what to match against. field=value specifies additional options that furthermore modify the rule to match events based on a specified architecture, group ID, process ID, and others. For a full listing of all available field types and their values, see the auditctl(8) man page. ` -F [n=v | n!=v | n<v | n>v | n<=v | n>=v | n&v | n&=v]`
 
 
