@@ -41,12 +41,6 @@ filebeat.prospectors:
     - /usr/sap/{{ hana_system_id }}/HDB{{ hana_instance_number }}/{{ hana_hostname }}/trace/webdispatcher*.trc
   tags: ["hana-webdispatcher","hana-srv"]
   exclude_files: ['\.dev']
-- type: log
-  enabled: true
-  paths:
-    - /usr/sap/{{ hana_system_id }}/HDB{{ hana_instance_number }}/{{ hana_hostname }}/trace/webdispatcher*.trc
-  tags: ["hana-webdispatcher","hana-srv"]
-  exclude_files: ['\.dev']
   ### Multiline options
 
   # Mutiline can be used for log messages spanning multiple lines. This is common
