@@ -1,0 +1,4 @@
+
+alertmanager_version: 0.14.0
+alertmanager_bin_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
+alertmanager_ext_addr: "{{ ansible_host }}"

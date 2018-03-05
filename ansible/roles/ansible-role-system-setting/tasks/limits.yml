@@ -1,0 +1,67 @@
+- pam_limits:
+    domain: smith
+    limit_type: soft
+    limit_item: nproc
+    value: 65535
+    use_max: yes
+    dest: /etc/security/limits.conf
+
+- pam_limits:
+    domain: smith
+    limit_type: hard
+    limit_item: nproc
+    value: 65535
+    use_max: yes
+    dest: /etc/security/limits.conf 
+
+- pam_limits:
+    domain: smith
+    limit_type: soft
+    limit_item: nofile
+    value: 655350
+    use_max: yes
+    dest: /etc/security/limits.conf 
+
+- pam_limits:
+    domain: smith
+    limit_type: hard
+    limit_item: nofile
+    value: 655350
+    use_max: yes
+    dest: /etc/security/limits.conf 
+
+- pam_limits:
+    domain: smith
+    limit_type: soft
+    limit_item: nproc
+    value: 65535
+    use_max: yes
+    dest: /etc/security/limits.d/20-nproc.conf
+- pam_limits:
+    domain: smith
+    limit_type: hard
+    limit_item: nproc
+    value: 65535
+    use_max: yes
+    dest: /etc/security/limits.d/20-nproc.conf
+
+
+- lineinfile:
+    path: /etc/profile
+    insertafter: 'EOF'
+    line: 'ulimit -SHn 65535'
+
+- lineinfile:
+    path: /etc/profile
+    insertafter: 'EOF'
+    line: 'export TMOUT=120'
+- lineinfile:
+    path: /etc/profile
+    insertafter: 'EOF'
+    line: 'readonly TMOUT'
+
+- lineinfile:
+    path: /etc/sysconfig/init
+    insertafter: 'EOF'
+    line: 'PROMPT=no'
+

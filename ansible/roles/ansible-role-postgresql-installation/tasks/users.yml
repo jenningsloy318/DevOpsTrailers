@@ -1,0 +1,11 @@
+---
+- name: set super user postgres  password.
+  postgresql_user:
+    name: postgres
+    password: "{{  pgsql_postgres_password }}"
+    encrypted: yes
+  no_log: false
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true

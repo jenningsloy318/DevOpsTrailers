@@ -1,0 +1,19 @@
+---
+- name: install pgsql repo
+  yum: 
+     name: "{{ item }}"
+     state: installed
+     update_cache: true   
+  with_items: "{{ pgsql_repo_package }}"
+
+- name: Ensure PostgreSQL packages are installed.
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ postgresql_packages }}"
+
+
+- name: Ensure PostgreSQL Python libraries are installed.
+  package:
+    name: "{{ postgresql_python_library }}"
+    state: installed

@@ -1,0 +1,10 @@
+- name: install security updates
+  yum:
+      name: '*'
+      security: yes
+      state: latest
+      update_cache: yes
+      
+      
+      
+      

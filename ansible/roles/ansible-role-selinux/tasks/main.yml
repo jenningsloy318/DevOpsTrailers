@@ -1,0 +1,6 @@
+- name: disable selinux
+  lineinfile:
+    path: /etc/sysconfig/selinux
+    regexp: '^SELINUX='
+    line: 'SELINUX=disabled'
+  when: ansible_os_family == "RedHat"  

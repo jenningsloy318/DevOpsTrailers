@@ -1,0 +1,12 @@
+[Unit]
+Description=alertmanager  service
+
+[Service]
+Slice=container.slice
+ExecStart=/usr/bin/alertmanager --config.file=/etc/alertmanager/alertmanager.yml  --storage.path=/data/monitoring/alertmanager --web.external-url=http://{{ alertmanager_ext_addr }}:9093
+Restart=always
+RestartSec=2s
+StartLimitInterval=0
+KillMode=process
+[Install]
+WantedBy=multi-user.target

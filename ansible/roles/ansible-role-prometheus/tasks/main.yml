@@ -1,0 +1,64 @@
+- stat:
+    path: /usr/bin/prometheus
+  register: prometheus
+- debug:
+    var=prometheus
+- name: Unarchive a file that needs to be downloaded (added in 2.0)
+  unarchive:
+    src: "{{ prometheus_bin_url }}"
+    dest: /tmp
+    remote_src: yes
+  when: prometheus.stat.exists == false
+
+- name: copy prometheus binary
+  copy:
+    src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
+    dest: /usr/bin
+    remote_src: yes
+    mode: 0755
+  when: prometheus.stat.exists == false
+
+- name: copy prometheus  promtool binary
+  copy:
+    src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
+    dest: /usr/bin
+    remote_src: yes
+    mode: 0755
+  when: prometheus.stat.exists == false
+- name: create prometheus service file
+  template:
+    src: prometheus.service
+    dest: /lib/systemd/system/prometheus.service
+
+- name: create prometheus conf dir
+  file:
+    path: /etc/prometheus/
+    state: directory
+    mode: 0755
+- name: create prometheus file sd dir
+  file:
+    path: /etc/prometheus/tgroups/
+    state: directory
+    mode: 0755
+
+- name: copy prometheus  console_libraries  console_libraries files
+  shell: cp -r "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries" "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/consoles"  /etc/prometheus/
+
+- name: create prometheus conf file
+  template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+  notify:
+    restart_prometheus  
+- name: create alert.rules.yml conf file
+  copy:
+    src: alert.rules.yml
+    dest: /etc/prometheus/alert.rules.yml
+  notify:
+    restart_prometheus  
+- name: start prometheus service
+  systemd: 
+    name: prometheus
+    state: restarted
+    enabled: true
+    daemon_reload: true

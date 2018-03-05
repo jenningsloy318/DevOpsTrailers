@@ -1,0 +1,17 @@
+global:
+  scrape_interval: 15s
+rule_files:
+- '/etc/prometheus/alert.rules.yml'
+
+scrape_configs:
+- job_name: 'tegraf-nodes'
+  metrics_path: {{ prometheus_job_metrics_path }}
+  file_sd_configs:
+    - files: ['tgroups/*.yml']
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - "{{ alertmanager_addr }}"
+

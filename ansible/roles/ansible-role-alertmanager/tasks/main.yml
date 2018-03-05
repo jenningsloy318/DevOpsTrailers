@@ -1,0 +1,48 @@
+- stat:
+    path: /usr/bin/alertmanager
+  register: alertmanager
+- debug:
+    var=alertmanager
+- name: Unarchive a file that needs to be downloaded
+  unarchive:
+    src: "{{ alertmanager_bin_url }}"
+    dest: /tmp
+    remote_src: yes
+  when:  alertmanager.stat.exists == false
+
+
+- name: copy alertmanager binary
+  copy:
+    src: "/tmp/alertmanager-{{ alertmanager_version }}.linux-amd64/alertmanager"
+    dest: /usr/bin
+    remote_src: yes
+    mode: 0755
+  when: alertmanager.stat.exists == false
+- name: copy alertmanager  amtool binary
+  copy:
+    src: "/tmp/alertmanager-{{ alertmanager_version }}.linux-amd64/amtool"
+    dest: /usr/bin
+    remote_src: yes
+    mode: 0755
+  when: alertmanager.stat.exists == false
+
+- name: create alertmanager service file
+  template:
+    src: alertmanager.service
+    dest: /lib/systemd/system/alertmanager.service
+
+- name: create alertmanager conf dir
+  file:
+    path: /etc/alertmanager/
+    state: directory
+    mode: 0755
+
+- name: create alertmanager conf file
+  copy:
+    src: alertmanager.yml
+    dest: /etc/alertmanager/alertmanager.yml
+  notify:
+    restart_alertmanager  
+    
+- name: start alertmanager 
+  systemd: name=alertmanager state=restarted enabled=true  daemon_reload=true

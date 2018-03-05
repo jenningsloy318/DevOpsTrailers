@@ -1,0 +1,12 @@
+- name: enable firewalld
+  systemd:
+    name: firewalld
+    state: started
+    enabled: True
+
+- name: disable cups
+  systemd:
+    name: cups
+    state: stopped
+    enabled: false
+

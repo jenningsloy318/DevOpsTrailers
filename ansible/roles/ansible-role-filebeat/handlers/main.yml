@@ -1,0 +1,3 @@
+---
+- name: restart_auditbeat
+  systemd: name=auditbeat state=restarted enabled=true daemon_reload=true

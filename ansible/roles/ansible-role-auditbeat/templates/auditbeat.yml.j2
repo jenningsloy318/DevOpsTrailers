@@ -1,0 +1,90 @@
+#==========================  Modules configuration =============================
+auditbeat.modules:
+- module: audit
+  metricsets: [kernel]
+  kernel.audit_rules: |
+    -a exit,always -F arch=b32  -S execve
+    -a exit,always -F arch=b64  -S execve
+    -a user,always -F msgtype=USER_AUTH  -F arch=b32
+    -a user,always -F msgtype=USER_AUTH  -F arch=b64
+    -a user,always -F msgtype=LOGIN  -F arch=b32
+    -a user,always -F msgtype=LOGIN  -F arch=b64
+    -a user,always -F msgtype=USER_LOGIN  -F arch=b32
+    -a user,always -F msgtype=USER_LOGIN  -F arch=b64
+    -a user,always -F msgtype=USER_LOGOUT  -F arch=b32
+    -a user,always -F msgtype=USER_LOGOUT  -F arch=b64
+
+
+- module: audit
+  metricsets: [file]
+  file.paths:
+  - /bin
+  - /usr/bin
+  - /sbin
+  - /usr/sbin
+  - /etc
+
+#================================ Processors ===================================
+
+#==================== Elasticsearch template setting    =========================
+setup.template.settings:
+  index.number_of_shards: 3
+  #index.codec: best_compression
+  #_source.enabled: false      
+#============================== Dashboards =====================================
+# These settings control loading the sample dashboards to the Kibana index.   oading
+# the dashboards is disabled by default and can be enabled either by setting the
+# options here, or by using the `-setup` CLI flag or the `setup` command.
+setup.dashboards.enabled: true
+
+# The URL from where to download the dashboards archive. By default this URL
+# has a value which is computed based on the Beat name and version. For released
+# versions, this URL points to the dashboard archive on the artifacts.elastic.co
+# website.
+#setup.dashboards.url:    
+
+# The directory from where to read the dashboards. The default is the `kibana`
+# folder in the home path.
+setup.dashboards.directory: ${path.home}/kibana
+#============================== Kibana =====================================
+
+# Starting with Beats version 6.0.0, the dashboards are loaded via the Kibana PI.
+# This requires a Kibana endpoint configuration.
+setup.kibana:
+
+  # Kibana Host
+  # Scheme and port can be left out and will be set to the default (http and 5601)
+  # In case you specify and additional path, the scheme is required:  http://localhost:5601/path
+  # IPv6 addresses should always be defined as: https://[2001:db8::1]:5601
+  host: {{auditbeat_kibana_host}}:5601
+#-------------------------- Elasticsearch output ------------------------------
+{% if auditbeat_out_elasticsearch %}
+output.elasticsearch:
+  # Array of hosts to connect to.
+  
+  hosts: 
+
+  {% for item in auditbeat_elasticsearch_hosts %}
+    - {{item}}:9200
+  {%endfor%}
+
+
+  # Optional protocol and basic auth credentials.
+  #protocol: "https"
+  #username: "elastic"
+  #password: "changeme"
+{%endif%}
+
+{% if auditbeat_out_logstash %}
+#-------------------------- logstash  output ------------------------------
+
+
+output.logstash:
+  
+
+  hosts:
+  {% for item in auditbeat_logstash_hosts %}
+    - {{item}}:5044
+  {%endfor%}
+{%endif%}
+
