@@ -1,0 +1,19 @@
+{           
+    "auth_keys" : {
+       "key1" : {
+          "type" : "standard",
+          "key" : "41ED055262266AE2C9F5095BD211B7B6"
+       }
+    },
+    "signing" : {
+       "default" : {
+          "auth_remote" : {
+             "remote" : "cfssl_server",
+             "auth_key" : "key1"
+          }
+       }
+    },
+    "remotes" : {
+       "cfssl_server" : "localhost:8888"
+    }
+ }
