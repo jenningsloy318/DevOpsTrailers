@@ -2,11 +2,11 @@
   systemd:
     name: firewalld
     state: started
-    enabled: True
+    enabled: yes
 
 - name: disable cups
   systemd:
     name: cups
     state: stopped
-    enabled: false
+    enabled: no
 

@@ -3,7 +3,7 @@
   yum: 
      name: "{{ item }}"
      state: installed
-     update_cache: true   
+     update_cache: yes   
   with_items: "{{ pgsql_repo_package }}"
 
 - name: Ensure PostgreSQL packages are installed.

@@ -45,4 +45,8 @@
     restart_alertmanager  
     
 - name: start alertmanager 
-  systemd: name=alertmanager state=restarted enabled=true  daemon_reload=true
+  systemd: 
+    name: alertmanager 
+    state: restarted 
+    enabled: yes
+    daemon_reload: yes

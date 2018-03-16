@@ -1,6 +1,10 @@
 ---
 - name: restart_prometheus
-  systemd: name=prometheus state=restarted enabled=true daemon_reload=true
+  systemd: 
+    name: prometheus 
+    state: restarted 
+    enabled: yes
+    daemon_reload: yes
 
 
 

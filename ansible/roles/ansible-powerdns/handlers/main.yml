@@ -5,7 +5,7 @@
   service:
     name: "{{ powerdns_authoritative_service_name }}"
     state: restarted
-    enabled: true
+    enabled: yes
   tags:
     - powerdns
     - authoritative
@@ -14,7 +14,7 @@
   service:
     name: "{{ powerdns_authoritative_service_name }}"
     state: reloaded
-    enabled: true
+    enabled: yes
 
   tags:
     - powerdns
@@ -24,7 +24,7 @@
   service:
     name: "{{ powerdns_recursor_service_name }}"
     state: restarted
-    enabled: true
+    enabled: yes
 
   tags:
     - powerdns
@@ -34,7 +34,7 @@
   service:
     name: "{{ powerdns_recursor_service_name }}"
     state: restarted
-    enabled: true
+    enabled: yes
   tags:
     - powerdns
     - recursor

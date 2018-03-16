@@ -6,17 +6,24 @@
   register: filebeat_install_status
 - debug: var=filebeat_install_status.results
 
+- name: install td-agent-bit repo
+  copy: src=td-agent-bit.repo dest=/etc/yum.repos.d/td-agent-bit.repo owner=root group=root mode=0755
 
-- name: install filebeat
+- name: check td-agent-bit  
+  stat:
+    path: /opt/td-agent-bit/bin/td-agent-bit
+  register: td-agent-bit
+
+
+- name: install td-agent-bit
   yum:
-    name: "{{ filebeat_rpm_url }}"
+    name:  td-agent-bit
     state: present
     allow_downgrade: yes  
-  when: filebeat_install_status.results|length == 0
-  register: install
+  when: td-agent-bit.results|length == 0
 
 
 - name: create conf for filebeat 
   template: src=filebeat.yml.j2 dest=/etc/filebeat/filebeat.yml owner=root group=root mode=0755
   notify:
-    restart_auditbeat  
+    restart_fluentbit

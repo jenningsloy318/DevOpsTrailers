@@ -6,6 +6,16 @@
   register: auditbeat_install_status
 - debug: var=auditbeat_install_status.results
 
+
+
+- name: install auditbeat
+  yum:
+    name: "{{ auditbeat_rpm_url }}"
+    state: present
+    allow_downgrade: yes  
+  when: auditbeat_install_status.results|length == 0
+
+
 - name: ensure auditd is installed 
   yum:
     name: audit
@@ -21,3 +31,10 @@
   template: src=auditbeat.yml.j2 dest=/etc/auditbeat/auditbeat.yml owner=root group=root mode=0755
   notify:
     restart_auditbeat  
+
+- name: start auditbeat
+  systemd: 
+    name: auditbeat 
+    state: restarted 
+    enabled: yes 
+    daemon_reload: yes

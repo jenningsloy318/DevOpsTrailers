@@ -14,5 +14,9 @@
     - "{{lsyncd_status_file}}"
   
 - name: restart lsyncd 
-  service: name=lsyncd enabled=yes daemon_reload=true state=restarted
+  service: 
+    name: lsyncd 
+    enabled: yes 
+    daemon_reload: yes
+    state: restarted
   when: lsyncd_startup_enabled == True
