@@ -1,0 +1,11 @@
+[Unit]
+Description=Nexus Artifact Server
+
+[Service]
+User=nexus
+ExecStart=/usr/share/nexus/nexus-3.7.0-04/bin/nexus run
+ExecStop=/usr/share/nexus/nexus-3.7.0-04/bin/nexus stop
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
