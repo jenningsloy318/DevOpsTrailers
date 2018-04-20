@@ -1,0 +1,19 @@
+{
+    "hosts": [
+    	"grafana.snfc.org"
+  ],
+    "CN": "grafana.snfc.org",
+    "key": {
+      "algo": "rsa",
+      "size": 4096
+    },
+    "names": [
+      {
+        "C": "CN",
+        "L": "Nanjing",
+        "OU": "Suning Sports",
+        "ST": "Jiangsu"
+      }
+    ]
+  }
+  

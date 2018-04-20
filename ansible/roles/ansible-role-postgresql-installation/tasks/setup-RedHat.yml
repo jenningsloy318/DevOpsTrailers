@@ -1,6 +1,6 @@
 ---
 - name: install pgsql repo
-  yum: 
+  package: 
      name: "{{ item }}"
      state: installed
      update_cache: yes   
@@ -17,3 +17,4 @@
   package:
     name: "{{ postgresql_python_library }}"
     state: installed
+  when: ansible_os_family == 'RedHat'

@@ -1,4 +1,19 @@
 
-alertmanager_version: 0.14.0
+alertmanager_version: 0.15.0-rc.1
 alertmanager_bin_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
 alertmanager_ext_addr: "{{ ansible_host }}"
+alertmanger_cluster_peers:
+  - 10.36.52.181
+  - 10.36.52.182
+  - 10.36.52.183
+
+alertmanager_smtp_smarthost:
+alertmanager_smtp_from: 
+alertmanager_smtp_require_tls: 
+alertmanager_smtp_auth_username: 
+alertmanager_smtp_auth_password: 
+
+alertmanager_slack_api_url: 
+alertmanager_wechat_api_url:  
+alertmanager_wechat_api_secret:  
+alertmanager_wechat_api_corp_id:  

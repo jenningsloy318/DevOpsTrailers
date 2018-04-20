@@ -1,0 +1,5 @@
+- name: and more targets
+  copy:
+    src: targets.yml
+    dest: /etc/prometheus/tgroups/
+    mode: 0755

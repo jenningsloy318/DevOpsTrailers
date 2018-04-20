@@ -1,3 +1,4 @@
-
-filebeat_version: 6.1.1
-auditbeat_rpm_url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-{{filebeat_version}}-x86_64.rpm
+td_agent_bit_on_hana: 
+td_agent_bit_hana_instance_sid: 
+td_agent_bit_hana_instance_number: 
+td_agent_bit_hana_hostname: "{{ ansible_hostname }}"

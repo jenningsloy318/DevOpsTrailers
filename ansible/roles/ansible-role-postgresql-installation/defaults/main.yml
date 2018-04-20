@@ -4,9 +4,8 @@
 
 
 postgresql_python_library: python-psycopg2
-postgresql_user: postgres
-postgresql_group: postgres
-
+postgresql_postgres_user: postgres
+postgresql_postgres_group: postgres
 
 postgresql_unix_socket_directories:
   - /var/run/postgresql
@@ -20,7 +19,7 @@ postgresql_global_config_options:
 # Host based authentication (hba) entries to be added to the pg_hba.conf. This
 # variable's defaults reflect the defaults that come with a fresh installation.
 postgresql_hba_entries:
-  - { type: local, database: all, user: postgres, auth_method: peer }
+  - { type: local, database: all, user: postgres, auth_method: trust }
   - { type: local, database: all, user: all, auth_method: peer }
   - { type: host, database: all, user: all, address: all, auth_method: md5 }
 

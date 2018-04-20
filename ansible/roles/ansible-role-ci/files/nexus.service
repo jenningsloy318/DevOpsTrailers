@@ -3,8 +3,8 @@ Description=Nexus Artifact Server
 
 [Service]
 User=nexus
-ExecStart=/usr/share/nexus/nexus-3.7.0-04/bin/nexus run
-ExecStop=/usr/share/nexus/nexus-3.7.0-04/bin/nexus stop
+ExecStart=/data/nexus/nexus-3.10.0-04/bin/nexus run
+ExecStop=/data/nexus/nexus-3.10.0-04/bin/nexus stop
 KillMode=process
 
 [Install]

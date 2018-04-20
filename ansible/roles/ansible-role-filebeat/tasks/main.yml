@@ -1,20 +1,13 @@
 ---
 
-- name: Check if filebeat is deployed 
-  yum: 
-    list: filebeat-{{filebeat_version}}
-  register: filebeat_install_status
-- debug: var=filebeat_install_status.results
-
 
 - name: install filebeat
-  yum:
+  package:
     name: "{{ filebeat_rpm_url }}"
     state: present
     allow_downgrade: yes  
-  when: filebeat_install_status.results|length == 0
   register: install
-
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Suse"
 
 - name: create conf for filebeat 
   template: src=filebeat-hana.yml.j2 dest=/etc/filebeat/filebeat.yml owner=root group=root mode=0755

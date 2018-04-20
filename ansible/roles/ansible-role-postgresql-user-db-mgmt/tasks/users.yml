@@ -8,15 +8,15 @@
     db: "{{ item.db | default(omit) }}"
     login_host: "{{ item.login_host | default('localhost') }}"
     login_password: "{{ item.login_password | default(omit) }}"
-    login_user: "{{ item.login_user | default(postgresql_user) }}"
+    login_user: "{{ item.login_user | default(postgresql_postgres_user) }}"
     login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket_directories[0]) }}"
     port: "{{ item.port | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     encrypted: yes
   with_items: "{{ postgresql_users }}"
-  no_log: true
+  no_log: false
   become: yes
-  become_user: "{{ postgresql_user }}"
+  become_user: "{{ postgresql_postgres_user }}"
   # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
   vars:
     ansible_ssh_pipelining: true

@@ -21,24 +21,24 @@ filebeat.prospectors:
 - type: log
   enabled: true
   paths:
-    - /usr/sap/{{ hana_system_id }}/HDB{{ hana_instance_number }}/{{ hana_hostname }}/trace/available.log
+    - /usr/sap/{{ filebeat_hana_instance_sid }}/HDB{{ filebeat_hana_instance_number }}/{{ filebeat_hana_hostname }}/trace/available.log
   tags: ["hana-available"]
 - type: log
   enabled: true
   paths:
-    - /usr/sap/{{ hana_system_id }}/HDB{{ hana_instance_number }}/{{ hana_hostname }}/trace/indexserver*.trc
+    - /usr/sap/{{ filebeat_hana_instance_sid }}/HDB{{ filebeat_hana_instance_number }}/{{ filebeat_hana_hostname }}/trace/indexserver*.trc
   tags: ["hana-indexserver","hana-srv"]
   exclude_files: ['\.executed_statements','\.loads','\.unloads']
 - type: log
   enabled: true
   paths:
-    - /usr/sap/{{ hana_system_id }}/HDB{{ hana_instance_number }}/{{ hana_hostname }}/trace/xsengine*.trc
+    - /usr/sap/{{ filebeat_hana_instance_sid }}/HDB{{ filebeat_hana_instance_number }}/{{ filebeat_hana_hostname }}/trace/xsengine*.trc
   tags: ["hana-xsengine","hana-srv"]
   exclude_files: ['\.executed_statements']
 - type: log
   enabled: true
   paths:
-    - /usr/sap/{{ hana_system_id }}/HDB{{ hana_instance_number }}/{{ hana_hostname }}/trace/webdispatcher*.trc
+    - /usr/sap/{{ filebeat_hana_instance_sid }}/HDB{{ filebeat_hana_instance_number }}/{{ filebeat_hana_hostname }}/trace/webdispatcher*.trc
   tags: ["hana-webdispatcher","hana-srv"]
   exclude_files: ['\.dev']
   ### Multiline options

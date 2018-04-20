@@ -1,8 +1,8 @@
 {
     "hosts": [
-    	"centos7"
+    	"getcerts.snfc.org"
   ],
-    "CN": "centos7",
+    "CN": "getcerts.snfc.org",
     "key": {
       "algo": "rsa",
       "size": 4096

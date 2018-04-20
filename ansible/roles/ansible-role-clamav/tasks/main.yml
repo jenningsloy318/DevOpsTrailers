@@ -21,6 +21,8 @@
 
 - import_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
+- import_tasks: setup-Suse.yml
+  when: ansible_os_family == 'Suse'
 
 - name: Change configuration for the ClamAV daemon.
   lineinfile:

@@ -7,5 +7,8 @@
   no_log: false
   become: yes
   become_user: postgres
+  become_method: enable
+  environment:
+#    PGPASSWORD: "{{  pgsql_postgres_password }}"
   vars:
     ansible_ssh_pipelining: true

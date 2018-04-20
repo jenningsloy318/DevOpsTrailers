@@ -1,9 +1,7 @@
 {
     "signing": {
         "default": {
-            "auth_key": "key1",
             "expiry": "35040h",
-            "crl_url": "http://cfssl.lan.amos:8888/crl",
             "usages": [
                 "signing",
                 "key encipherment",
@@ -16,7 +14,6 @@
 				"expiry": "720h"
 			},
             "intermediate": {
-                "auth_key": "key1",
                 "expiry": "35040h",
                 "usages": [
                     "signing",
@@ -30,26 +27,13 @@
                 }
             },
             "ocsp": {
-                "auth_key": "key1",
                 "usages": [
                   "digital signature",
                   "ocsp signing"
                 ],
                 "expiry": "35040h"
               },
-              "serverCA": {
-                "auth_key": "key1",
-                "expiry": "35040h",
-                "usages": [
-                  "signing",
-                  "key encipherment",
-                  "server auth",
-                  "cert sign",
-                  "crl sign"
-                ]
-              },
             "server": {
-                "auth_key": "key1",
                 "expiry": "35040h",
                 "usages": [
                     "signing",
@@ -58,7 +42,6 @@
                 ]
             },
             "client": {
-                "auth_key": "key1",
                 "expiry": "35040h",
                 "usages": [
                     "signing",
@@ -67,7 +50,6 @@
                 ]
             },
             "peer": {
-                "auth_key": "key1",
                 "expiry": "35040h",
                 "usages": [
                     "signing",
@@ -77,11 +59,6 @@
                 ]
             }
         }
-    },
-    "auth_keys": {
-        "key1": {
-            "key": "{{cfssl_auth_key}}",
-            "type": "standard"
-        }
     }
+
 }

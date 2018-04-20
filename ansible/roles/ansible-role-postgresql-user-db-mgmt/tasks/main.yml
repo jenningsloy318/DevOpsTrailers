@@ -1,5 +1,6 @@
 ---
 # Variable configuration.
+- debug: var="{{ pgsql_user_name }}"
 - name: Ensure PostgreSQL Python libraries are installed.
   package:
     name: "{{ postgresql_python_library }}"

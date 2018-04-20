@@ -2,8 +2,7 @@
 prometheus_version: 2.1.0
 prometheus_bin_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
 prometheus_ext_addr: "{{ ansible_host }}"
-alertmanager_addr: 192.168.59.139:9093
+alertmanager_addrs:
+  - 10.36.52.183
+  - 10.36.52.182
 prometheus_job_metrics_path: /metrics
-prometheus_dns_sd_domain: snfc.org
-prometheus_dns_sd_record_type: A
-prometheus_dns_sd_port: 9273

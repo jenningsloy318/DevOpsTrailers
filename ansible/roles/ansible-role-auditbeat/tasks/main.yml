@@ -1,34 +1,26 @@
 ---
 
-- name: Check if auditbeat is deployed 
-  yum: 
-    list: auditbeat-{{auditbeat_version}}
-  register: auditbeat_install_status
-- debug: var=auditbeat_install_status.results
-
-
 
 - name: install auditbeat
-  yum:
+  package:
     name: "{{ auditbeat_rpm_url }}"
     state: present
     allow_downgrade: yes  
-  when: auditbeat_install_status.results|length == 0
 
 
 - name: ensure auditd is installed 
-  yum:
+  package:
     name: audit
     state: present
 
-- name: ensure auditd is running
-  systemd: 
-    name: auditd
-    state: reloaded
-    enabled: yes
     
 - name: create conf for auditbeat 
-  template: src=auditbeat.yml.j2 dest=/etc/auditbeat/auditbeat.yml owner=root group=root mode=0755
+  template: 
+    src: auditbeat.yml.j2 
+    dest: /etc/auditbeat/auditbeat.yml 
+    owner: root 
+    group: root 
+    mode: 0755
   notify:
     restart_auditbeat  
 

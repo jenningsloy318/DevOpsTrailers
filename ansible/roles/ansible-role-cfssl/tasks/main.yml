@@ -63,14 +63,44 @@
   shell: cfssl gencert -ca ca.pem -ca-key ca-key.pem client_csr.json| cfssljson -bare cfssl
   args:
     chdir: /etc/cfssl/
+
+- name: ensure postgresl client is installed
+  yum:
+    name: postgresql
+    state: installed
+
+- name: copy CreateCertificates.sql
+  copy:
+    src: CreateCertificates.sql
+    dest: /etc/cfssl/CreateCertificates.sql
+- name: create tables for cfssl
+  shell: psql < /etc/cfssl/CreateCertificates.sql
+  environment:
+  - PGHOST : "{{cfssl_db_host}}"
+  - PGDATABASE: "{{cfssl_db_database}}"
+  - PGUSER: "{{cfssl_db_user}}"
+  - PGPASSWORD: "{{cfssl_db_password}}"
+
 - name: install cfssl-api.service
   copy: 
-    src: cfssl-api.service
-    dest: /lib/systemd/system/cfssl-api.service
+    src: cfssl-server.service
+    dest: /lib/systemd/system/cfssl-server.service
     
-- name: start cfssl-api service
+- name: start cfssl-server service
   systemd: 
-    name: cfssl-api
+    name: cfssl-server
     state: restarted
     enabled: yes
     daemon_reload: yes
+
+- name: add firewalld rules
+  firewalld:
+    zone: public
+    service: https
+    permanent: true
+    state: enabled
+  when: ansible_os_family == "RedHat"
+
+- name: reload firewalld
+  shell: firewall-cmd --reload
+  when: ansible_os_family == "RedHat"

@@ -13,5 +13,6 @@ alerting:
   - scheme: http
     static_configs:
     - targets:
-      - "{{ alertmanager_addr }}"
-
+    {% for alertmanager_addr in alertmanager_addrs %} 
+      - {{ alertmanager_addr }}:9093
+    {%endfor%}

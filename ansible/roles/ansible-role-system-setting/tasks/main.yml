@@ -1,4 +1,12 @@
+
+- name: install new dns conf
+  copy:
+    src: resolv.conf
+    dest: /etc/resolv.conf
+
 - import_tasks: limits.yml
+  when: ansible_os_family == "RedHat" 
 - import_tasks: sec-update.yml
 - import_tasks: services.yml
 - import_tasks: sysctl.yml
+  when: ansible_os_family == "RedHat" 

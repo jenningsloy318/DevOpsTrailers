@@ -1,5 +1,5 @@
 - pam_limits:
-    domain: smith
+    domain: '*'
     limit_type: soft
     limit_item: nproc
     value: 65535
@@ -7,7 +7,7 @@
     dest: /etc/security/limits.conf
 
 - pam_limits:
-    domain: smith
+    domain: '*'
     limit_type: hard
     limit_item: nproc
     value: 65535
@@ -15,7 +15,7 @@
     dest: /etc/security/limits.conf 
 
 - pam_limits:
-    domain: smith
+    domain: '*'
     limit_type: soft
     limit_item: nofile
     value: 655350
@@ -23,7 +23,7 @@
     dest: /etc/security/limits.conf 
 
 - pam_limits:
-    domain: smith
+    domain: '*'
     limit_type: hard
     limit_item: nofile
     value: 655350
@@ -31,14 +31,14 @@
     dest: /etc/security/limits.conf 
 
 - pam_limits:
-    domain: smith
+    domain: '*'
     limit_type: soft
     limit_item: nproc
     value: 65535
     use_max: yes
     dest: /etc/security/limits.d/20-nproc.conf
 - pam_limits:
-    domain: smith
+    domain: '*'
     limit_type: hard
     limit_item: nproc
     value: 65535
@@ -48,20 +48,16 @@
 
 - lineinfile:
     path: /etc/profile
-    insertafter: 'EOF'
-    line: 'ulimit -SHn 65535'
-
-- lineinfile:
-    path: /etc/profile
-    insertafter: 'EOF'
+    regexp: '^export.*TMOUT=.*'    
     line: 'export TMOUT=120'
 - lineinfile:
     path: /etc/profile
+    regexp: '^readonly.*'
     insertafter: 'EOF'
     line: 'readonly TMOUT'
 
-- lineinfile:
-    path: /etc/sysconfig/init
-    insertafter: 'EOF'
-    line: 'PROMPT=no'
+#- lineinfile:
+#    path: /etc/sysconfig/init
+#    regexp: '^PROMPT=.*'
+#    line: 'PROMPT=no'
 

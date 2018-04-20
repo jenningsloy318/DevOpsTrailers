@@ -1,11 +1,9 @@
-auditbeat_kibana_host: 192.168.59.130
+auditbeat_kibana_host:  
 auditbeat_out_logstash: true
 auditbeat_logstash_hosts:
- - 192.168.59.130
 auditbeat_out_elasticsearch: true
 auditbeat_elasticsearch_hosts:
- - 192.168.59.130
- - 192.168.59.131
 
-auditbeat_version: 6.1.1
+
+auditbeat_version: 6.2.4
 auditbeat_rpm_url: https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-{{ auditbeat_version }}-x86_64.rpm

@@ -1,28 +1,13 @@
 ---
-
-
-- name: Check if telegraf is deployed 
-  yum: 
-    list: telegraf-{{telegraf_rpm_version}}
-  register: telegraf_install_status
-
-- name: install telegraf
-  yum:
-     name: "{{ telegraf_rpm_url }}"
-     state: present
-  when: telegraf_install_status.results|length == 0
-
-- name: ensure ipmi is installed 
-  yum:
-    name: ipmitool
-    state: present
-  when: ansible_os_family == "RedHat" 
-
-- name: ensure lm_sensors is installed 
-  yum:
-    name: lm_sensors
-    state: present
-  when: ansible_os_family == "RedHat" 
+- import_tasks: set_vars.yaml
+- name: install packages
+  package:
+    name: "{{ item}}"
+    state: installed
+  with_items:
+    - "{{ telegraf_rpm_url }}"
+    - ipmitool
+    - lm_sensors
 
 - name: configure ipmi permission 
   copy: 
@@ -36,19 +21,31 @@
   shell: udevadm control --reload-rules && udevadm trigger
 
 
+
 - name: create telegraf conf  
-  copy: 
-    src: telegraf.conf 
+  template: 
+    src: "{{telegraf_conf_src}}"
     dest: /etc/telegraf/telegraf.conf
     owner: root 
     group: root 
     mode: 0644
 
-  notify:
-    restart_telegraf
 - name: restart_telegraf
   systemd: 
     name: telegraf 
     state: restarted 
     enabled: yes 
     daemon_reload: yes
+
+- name: add firewalld rules
+  firewalld:
+    zone: public
+    port: 9273/tcp
+    permanent: true
+    state: enabled
+  when: ansible_os_family == "RedHat"
+
+- name: reload firewalld
+  shell: firewall-cmd --reload  
+  when: ansible_os_family == "RedHat"
+  

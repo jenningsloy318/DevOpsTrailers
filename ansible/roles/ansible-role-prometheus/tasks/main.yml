@@ -42,7 +42,7 @@
     mode: 0755
 
 - name: copy prometheus  console_libraries  console_libraries files
-  shell: cp -r "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries" "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/consoles"  /etc/prometheus/
+  shell: cp -rf "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries" "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/consoles"  /etc/prometheus/
 
 - name: create prometheus conf file
   template:
@@ -62,3 +62,11 @@
     state: restarted
     enabled: yes
     daemon_reload: yes
+- name: add firewalld rules
+  firewalld:
+    zone: public
+    port: 9090/tcp
+    permanent: true
+    state: enabled
+- name: reload firewalld
+  shell: firewall-cmd --reload

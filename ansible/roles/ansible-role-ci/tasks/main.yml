@@ -1,36 +1,37 @@
 - name: Download jdk
   get_url:
     url: "{{JDK_URL}}"
-    dest: /tmp/jdk-8u161-linux-x64.rpm
+    dest: /tmp/jdk-linux-x64.rpm
     headers: "{{JDK_HEADER}}"
     validate_certs: false
 
 - name: install jdk 
-  yum:
-    name: /tmp/jdk-8u161-linux-x64.rpm
+  package:
+    name: /tmp/jdk-linux-x64.rpm
     state: present
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Suse"
 
 - name: add JAVA_HOME 
   lineinfile: 
    dest: /etc/profile
    state: present
    regexp: '^export.*JAVA_HOME=.*'
-   line:  "export JAVA_HOME=/usr/java/jdk1.8.0_161"
+   line:  "export JAVA_HOME={{java_home}}"
 
 
 
 
-- name: Extract com.sap.prd.commonrepo.artifactdeployer.dist.cli-0.19.2.tar.gz into /opt
+- name: Extract com.sap.prd.commonrepo.artifactdeployer.dist.cli-0.19.2.tar.gz into /data
   unarchive:
     src: com.sap.prd.commonrepo.artifactdeployer.dist.cli-0.19.2.tar.gz
-    dest: /opt
+    dest: /data
 
 
 
-- name: Extract com.sap.prd.commonrepo.artifactimporter.dist.cli-0.11.5.tar.gz into /opt
+- name: Extract com.sap.prd.commonrepo.artifactimporter.dist.cli-0.11.5.tar.gz into /data
   unarchive:
     src: com.sap.prd.commonrepo.artifactimporter.dist.cli-0.11.5.tar.gz
-    dest: /opt/
+    dest: /data/
 
 
 
@@ -39,17 +40,18 @@
     path: '{{ item }}'
     state: directory
   with_items:
-    - /opt/artifactimporter
-    - /opt/artifactdeployer
-    - /opt/nexus
+    - /data/artifactimporter
+    - /data/artifactdeployer
+    - /data/nexus
+    - /etc/docker
 
 
 - name: copy artifactimporter files
-  shell: rsync -a   /opt/artifactimporter-0.11.5/ /opt/artifactimporter/
+  shell: rsync -a   /data/artifactimporter-0.11.5/ /data/artifactimporter/
 
 
 - name: rename artifactdeployer
-  shell: rsync -a /opt/artifactdeployer-0.19.2/ /opt/artifactdeployer/
+  shell: rsync -a /data/artifactdeployer-0.19.2/ /data/artifactdeployer/
 
 
 - name: set ARTIFACTDEPLOYER_HOME
@@ -57,14 +59,14 @@
    dest: /etc/profile
    state: present
    regexp: '^export.*ARTIFACTDEPLOYER_HOME=.*'
-   line:  "export ARTIFACTDEPLOYER_HOME=/opt/artifactdeployer" 
+   line:  "export ARTIFACTDEPLOYER_HOME=/data/artifactdeployer" 
 
 - name: set ARTIFACTIMPORTER_HOME
   lineinfile: 
    dest: /etc/profile
    state: present
    regexp: '^export.*ARTIFACTIMPORTER_HOME=.*'
-   line:  "export ARTIFACTIMPORTER_HOME=/opt/artifactimporter"    
+   line:  "export ARTIFACTIMPORTER_HOME=/data/artifactimporter"    
 
 - name: copy SAPCAR
   copy:
@@ -77,15 +79,15 @@
 - name: copy SAP_HANA_CLIENT100_122_10_Linux_on_x86_64.SAR
   copy:
     src: SAP_HANA_CLIENT100_122_10_Linux_on_x86_64.SAR
-    dest: /opt/SAP_HANA_CLIENT100_122_10_Linux_on_x86_64.SAR 
+    dest: /data/SAP_HANA_CLIENT100_122_10_Linux_on_x86_64.SAR 
 
 - name: extract SAP_HANA_CLIENT100_122_10_Linux_on_x86_64.SAR
   shell: SAPCAR -xf SAP_HANA_CLIENT100_122_10_Linux_on_x86_64.SAR
   args:
-    chdir: /opt/
+    chdir: /data/
 
 - name: install hana client
-  shell: /opt/SAP_HANA_CLIENT/hdbinst --batch -a client
+  shell: /data/SAP_HANA_CLIENT/hdbinst --batch -a client
 
 - name: set HDBCLIENT_HOME
   lineinfile: 
@@ -104,9 +106,10 @@
   rpm_key:
     state: present
     key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+  when: ansible_os_family == "RedHat"
 
 - name: install additional package
-  yum: 
+  package: 
     name: "{{ item}}"
     state: latest
     update_cache: yes
@@ -117,29 +120,29 @@
 
 - name: download nexus
   get_url:
-    url: http://download.sonatype.com/nexus/3/nexus-3.7.0-04-unix.tar.gz
-    dest: /tmp/nexus-3.7.0-04-unix.tar.gz
+    url: https://sonatype-download.global.ssl.fastly.net/repository/repositoryManager/3/nexus-3.10.0-04-unix.tar.gz
+    dest: /tmp/nexus-3.10.0-04-unix.tar.gz
 
 - name: Extract nexus
   unarchive:
-    src:  /tmp/nexus-3.7.0-04-unix.tar.gz
-    dest: /opt
+    src:  /tmp/nexus-3.10.0-04-unix.tar.gz
+    dest: /data/nexus
     remote_src: yes
 
 - name: create nexus user
   user:
     name: nexus
     shell: /bin/sh
-    home: /opt/nexus
+    home: /data/nexus
 
 
-- name: copy nexus 
-  shell: rsync -a /opt/nexus-3.7.0-04/ /opt/nexus/
+#- name: copy nexus 
+#  shell: rsync -a /data/nexus-3.10.0-04/ /data/nexus/
 
 
-- name: set owner of /opt/nexus
+- name: set owner of /data/nexus
   file:
-    path: /opt/nexus
+    path: /data/nexus/
     owner: nexus
     group: nexus
     recurse: yes
@@ -153,19 +156,18 @@
     path: '{{ item }}'
     state: absent
   with_items:
-    - /opt/nexus-3.7.0-04/
-    - /tmp/nexus-3.7.0-04-unix.tar.gz
-    - /tmp/jdk-8u161-linux-x64.rpm
-    - /opt/SAP_HANA_CLIENT100_122_10_Linux_on_x86_64.SAR
-    - /opt/artifactimporter-0.11.5/
-    - /opt/artifactdeployer-0.19.2/ 
+    - /tmp/nexus-3.10.0-04-unix.tar.gz
+    - /tmp/jdk-linux-x64.rpm
+    - /data/SAP_HANA_CLIENT100_122_10_Linux_on_x86_64.SAR
+    - /data/artifactimporter-0.11.5/
+    - /data/artifactdeployer-0.19.2/ 
 
 - name: set NEXUS_HOME
   lineinfile: 
    dest: /etc/profile
    state: present
    regexp: '^export.*NEXUS_HOME=.*'
-   line:  "export NEXUS_HOME=/opt/nexus"    
+   line:  "export NEXUS_HOME=/data/nexus"    
 
 - name: install nexus service file
   copy:
@@ -192,6 +194,11 @@
     state: directory
     mode: 0777
 
+#- name: remove legacy init file
+#  file:
+#    path: /etc/init.d/jenkins
+#    state: absent
+
 
 - name: start jenkins
   systemd:
@@ -199,3 +206,64 @@
     state: restarted
     daemon_reload: yes
     enabled: yes
+- name: show jenkins initial admin password 
+  shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  register: jenkinsadminpass
+
+- debug: var=jenkinsadminpass.stdout_lines
+
+- name: ensure docker engine is installed
+  package:
+    name: "{{item}}"
+    state: installed
+  with_items:
+  - https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-selinux-17.03.2.ce-1.el7.centos.noarch.rpm
+  - https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-17.03.2.ce-1.el7.centos.x86_64.rpm
+  when: ansible_os_family == "RedHat" or    ansible_os_family == "Suse"
+
+
+- name: edit docker.service
+  lineinfile:
+    path: /lib/systemd/system/docker.service
+    regexp: '^ExecStart='
+    line: 'ExecStart=/usr/bin/dockerd'
+
+- name: install /etc/docker/daemon.json
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+- name: restart docker service
+  systemd:
+    name: docker
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+
+- name: add firewalld rules
+  firewalld:
+    zone: public
+    port: 2375/tcp
+    permanent: true
+    state: enabled
+  when: ansible_os_family == "RedHat"
+
+- name: add firewalld rules
+  firewalld:
+    zone: public
+    port: 6443/tcp
+    permanent: true
+    state: enabled
+  when: ansible_os_family == "RedHat"
+
+- name: add firewalld rules
+  firewalld:
+    zone: public
+    port: 8443/tcp
+    permanent: true
+    state: enabled
+  when: ansible_os_family == "RedHat"
+
+- name: reload firewalld
+  shell: firewall-cmd --reload
+  when: ansible_os_family == "RedHat"

@@ -1,14 +1,16 @@
-- stat:
-    path: /usr/bin/alertmanager
+- name: check version
+  shell: /usr/bin/alertmanager  --version |grep alert|awk '{print $3}'|grep {{ alertmanager_version }}
   register: alertmanager
+  ignore_errors: yes
+
 - debug:
-    var=alertmanager
+    var=alertmanager.stdout_lines
 - name: Unarchive a file that needs to be downloaded
   unarchive:
     src: "{{ alertmanager_bin_url }}"
     dest: /tmp
     remote_src: yes
-  when:  alertmanager.stat.exists == false
+  when:  alertmanager.stdout_lines  != ""
 
 
 - name: copy alertmanager binary
@@ -17,14 +19,14 @@
     dest: /usr/bin
     remote_src: yes
     mode: 0755
-  when: alertmanager.stat.exists == false
+  when:  alertmanager.stdout_lines  != ""
 - name: copy alertmanager  amtool binary
   copy:
     src: "/tmp/alertmanager-{{ alertmanager_version }}.linux-amd64/amtool"
     dest: /usr/bin
     remote_src: yes
     mode: 0755
-  when: alertmanager.stat.exists == false
+  when:  alertmanager.stdout_lines  != ""
 
 - name: create alertmanager service file
   template:
@@ -37,16 +39,30 @@
     state: directory
     mode: 0755
 
-- name: create alertmanager conf file
+- name: create alertmanager conf file (part 1)
+  template:
+    src: alertmanager-1.yml.j2
+    dest: /etc/alertmanager/alertmanager-1.yml
+
+- name: create alertmanager conf file (part 2)
   copy:
-    src: alertmanager.yml
-    dest: /etc/alertmanager/alertmanager.yml
+    src: alertmanager-2.yaml
+    dest: /etc/alertmanager/alertmanager-2.yml
+- name: create alertmanager conf file
+  shell: cat /etc/alertmanager/alertmanager-1.yml /etc/alertmanager/alertmanager-2.yml  >/etc/alertmanager/alertmanager.yml
   notify:
-    restart_alertmanager  
-    
+    restart_alertmanager
 - name: start alertmanager 
   systemd: 
     name: alertmanager 
     state: restarted 
     enabled: yes
     daemon_reload: yes
+- name: add firewalld rules
+  firewalld:
+    zone: public
+    port: 9093-9094/tcp
+    permanent: true
+    state: enabled
+- name: reload firewalld
+  shell: firewall-cmd --reload

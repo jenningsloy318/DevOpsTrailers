@@ -12,8 +12,8 @@
   template:
     src: "templates/pg_hba.conf.j2"
     dest: "{{ postgresql_config_path }}/pg_hba.conf"
-    owner: "{{ postgresql_user }}"
-    group: "{{ postgresql_group }}"
+    owner: "{{ postgresql_postgres_user }}"
+    group: "{{ postgresql_postgres_group }}"
     mode: 0600
   notify: restart postgresql
   when: postgresql_hba_entries
@@ -22,8 +22,8 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: "{{ postgresql_user }}"
-    group: "{{ postgresql_group }}"
+    owner: "{{ postgresql_postgres_user }}"
+    group: "{{ postgresql_postgres_group }}"
     mode: 02775
   with_items: "{{ postgresql_unix_socket_directories }}"
 
@@ -34,3 +34,4 @@
     line: "Environment=PGDATA={{ postgresql_data_dir }}"
     state: present
   notify: restart postgresql
+  
