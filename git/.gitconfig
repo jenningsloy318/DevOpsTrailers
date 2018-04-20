@@ -1,0 +1,25 @@
+[push]
+        default = simple
+[core]
+        editor = vim
+        excludesfile = ~/.gitignore_global
+        eol = lf
+        quotepath = false
+[merge]
+        tool = vimdiff
+[diff]
+        tool = vimdiff
+[difftool]
+        prompt = No
+[mergetool]
+        prompt = No
+[user]
+        name = Jennings Liu
+        email = jennings.liu@sap.com
+[alias]
+        st = status
+        co = checkout
+        br = branch
+        ci = commit
+[format]
+        pretty = format:%H %ai | %s%d  [%an]
