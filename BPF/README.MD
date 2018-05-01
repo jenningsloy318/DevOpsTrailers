@@ -21,34 +21,69 @@
     - Upstream in linux kernel( **bpf()** syscall, v3.18+)
     - Bytecode compilation upstream in LLVM/Clang
 
-    2.1 eBPF for kernerl tracing and event monitoring
 
-     eBPF programs can be designed for a variety of use cases, that divide into two fields of applications. One of them is the domain of kernel tracing and event monitoring. BPF programs can be attached to kprobes and they compare with other tracing methods, with many advantages (and sometimes some drawbacks).
-    
-    2.2 eBPF for network package filtering
+    2.1 BPF use cases 
+    - forwarding data: recently BPF improvements called “Sockmap” that we have upstreamed into the Linux kernel, which secure redirection at the socket layer itself.  cilium used this feature
 
-    The other application domain remains network programming. In addition to socket filter, eBPF programs can be attached to tc (Linux traffic control tool) ingress or egress interfaces and perform a variety of packet processing tasks, in an efficient way. This opens new perspectives in the domain.
-    ![bpf network filtering](./imgs/bpf-network-filtering.jpg)
+    - filtering:  previous iptables focus on packets, IP addresses, and ports, and BPF instead treating service identity and API protocols (e.g., HTTP, gRPC, and Kafka) as first-class citizens in the platform for filtering .  ----> for security area, take cilium for example
     
-    2.3 XDP
+    - visibility: can be used to construct the monitoring and tracing applications, for example BCC
+
+    2.2 other projects based on BPF
+    Some others, such as CETH(Common Ethernet Driver Framework), Cilium, are entirely based on it. BPF is buzzing, so we can expect a lot of tools and projects to orbit around it soon
+
+    2.3 Uage of BPF program
+        ![bpf program usage](./imgs/bpf-program-usage.jpg)
+        ![bpf program usage2](./imgs/bpf-program-usage2.jpg)
+    
+ 3. XDP
+
     XDP or eXpress Data Path provides a high performance, programmable network data path in the Linux kernel as part of the IO Visor Project.XDP provides bare metal packet processing at the lowest point in the software stack which makes it ideal for speed without compromising programmability.
 
-    The XDP packet process includes an in kernel component that processes RX packet-pages directly out of driver via a functional interface without early allocation of skbuff’s or software queues. BPF programs performs processing such as packet parsing, table look ups, creating/managing stateful filters, encap/decap packets, etc.
+    XDP is a framework for running BPF in the driver.
+
+    3.1 XDP Feature
+    - The XDP packet process includes an in kernel component that processes RX packet-pages directly out of driver via a functional interface without early allocation of skbuff’s or software queues. 
+    - BPF programs performs processing such as packet parsing, table look ups, creating/managing stateful filters, encap/decap packets, etc.
+
 
     ![bpf network filtering](./imgs/bpf-network-filtering2.jpg)
 
+
     https://github.com/iovisor/bpf-docs/blob/master/Express_Data_Path.pdf
     http://www.tk4479.net/dog250/article/details/77993218
-    
-    2.4 other projects based on BPF
-    Some others, such as CETH(Common Ethernet Driver Framework), Cilium, are entirely based on it. BPF is buzzing, so we can expect a lot of tools and projects to orbit around it soon
 
-    2.5 Uage of BPF program
-        ![bpf program usage](./imgs/bpf-program-usage.jpg)
-        ![bpf program usage2](./imgs/bpf-program-usage2.jpg)
+    3.2 comparison between XDP and traditional Linux Kernel Networking
+    - Traditionally Linux Kernel Networking
+        -  Rely on meta-data struct sk_buff (called "SKB")
+            - Keep state and pointers to real packet-data
+            - Assume most pkts reach deep into netstack (socket delivery)
+        - Take alloc, setup and clear cost of SKB "upfront"
+    - XDP change this: “new layer in network stack”
+        - XDP gives access to packet-data, before the SKB is allocated
+        - As early as possible: hook in NIC drivers
+        - Via programmable interface (eBPF)
+
+    3.3  XDP operation modes
+
+    - Native XDP
+
+        This is the default mode where the XDP BPF program is run directly out of the networking driver’s early receive path. Most widespread used NICs for 10G and higher support native XDP already.
+
+    - Offloaded XDP
+
+        In the offloaded XDP mode the XDP BPF program is directly offloaded into the NIC instead of being   executed on the host CPU. Thus, the already extremely low per-packet cost is pushed off the host  CPU entirely and executed on the NIC, providing even higher performance than running in native XDP.  This offload is typically implemented by SmartNICs containing multi-threaded, multicore flow     processors where a in-kernel JIT compiler translates BPF into native instructions for the latter.   Drivers supporting offloaded XDP usually also support native XDP for cases where some BPF helpers     may not yet or only be available for the native mode.
+
+    - Generic XDP
+
+        For drivers not implementing native or offloaded XDP yet, the kernel provides an option for generic     XDP which does not require any driver changes since run at a much later point out of the networking     stack. This setting is primarily targeted at developers who want to write and test programs against     the kernel’s XDP API, and will not operate at the performance rate of the native or offloaded   modes. For XDP usage in a production environment either the native or offloaded mode is better    suited and the recommended way to run XDP.
 
 
-1. BPF  links
+
+
+
+
+3. BPF  links
     - https://github.com/iovisor/bcc
     - https://github.com/iovisor/bpf-docs
 
