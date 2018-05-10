@@ -29,6 +29,8 @@
     
     - visibility: can be used to construct the monitoring and tracing applications, for example BCC
 
+
+
     2.2 other projects based on BPF
     Some others, such as CETH(Common Ethernet Driver Framework), Cilium, are entirely based on it. BPF is buzzing, so we can expect a lot of tools and projects to orbit around it soon
 
@@ -36,6 +38,7 @@
         ![bpf program usage](./imgs/bpf-program-usage.jpg)
         ![bpf program usage2](./imgs/bpf-program-usage2.jpg)
     
+
  3. XDP
 
     XDP or eXpress Data Path provides a high performance, programmable network data path in the Linux kernel as part of the IO Visor Project.XDP provides bare metal packet processing at the lowest point in the software stack which makes it ideal for speed without compromising programmability.
@@ -52,6 +55,22 @@
 
     https://github.com/iovisor/bpf-docs/blob/master/Express_Data_Path.pdf
     http://www.tk4479.net/dog250/article/details/77993218
+
+
+
+    The network processing module is listed as below:
+
+    ![network data flow processing](./imgs/ebpf-modules1.png)
+    The key difference here being that eBPF adds an additional hook in driver space. This hook is called eXpress DataPath, or XDP. This allows users to drop, reflect or redirect packets before they have an skb (socket buffer) metadata structure added to the packet
+    
+    Offloading eBPF to the NFP
+    Back in 4.9,  Network Flow Processor (NFP) BPF JIT-compiler  is added to the kernel, initially for cls_bpf (https://www.spinics.net/lists/netdev/msg379464.html).Through the NFP JIT, we have managed to effectively modify the program flow as shown in the diagram below:
+    ![network data flow processing](./imgs/ebpf-modules2.png)
+
+    That is the network packets are processed by the NIC itself processors.
+
+
+    > The key reason this was possible was because of how well the BPF machine maps to our flow processing cores on the NFP, this means that the NFP-based Agilio CX SmartNIC running at between 15-25W can offload a significant amount of processing from the host. In the load balancing example below, the NFP processes the same amount of packets as nearly 12 x86 cores from the host combined, an amount physically impossible for the host to handle due to PCIe bandwidth restrictions (Cores used: Intel Xeon CPU E5-2630 v4 @ 2.20GHz).
 
     3.2 comparison between XDP and traditional Linux Kernel Networking
     - Traditionally Linux Kernel Networking
@@ -81,10 +100,11 @@
 
 
 
-
+4. 
 
 3. BPF  links
     - https://github.com/iovisor/bcc
     - https://github.com/iovisor/bpf-docs
+    - 
 
 
