@@ -10,8 +10,7 @@ apt install xrdp xorgxrdp -y
 if [ ! -e /etc/xrdp/startubuntu.sh ] ; then
 cat >> /etc/xrdp/startubuntu.sh << EOF
 #!/bin/sh
-export GNOME_SHELL_SESSION_MODE=ubuntu
-export XDG_CURRENT_DESKTOP=ubuntu:GNOME
+export XDG_CURRENT_DESKTOP=MATE
 exec /etc/xrdp/startwm.sh
 EOF
 chmod a+x /etc/xrdp/startubuntu.sh
