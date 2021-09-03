@@ -128,7 +128,7 @@ when a the MTU of the sender is bigger than the path MTU on the path to destinat
       # tcpdump -i eth1 'ip[6] = 64'
       ```
    - Matching fragmentation ?
-      - if this is not the last fragment, so more gragments
+      - if this is not the last fragment, so more gragments,`00100000` is `32`
          ```
          tcpdump -i eth1 'ip[6] = 32'
       - if it is the last fragment, 
