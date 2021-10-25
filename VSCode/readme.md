@@ -73,7 +73,17 @@ vscod-mindmap
           "pptx": "wpp",
           "xls": "et",
           "xlsx": "et"
-        }
+        },
+    "terminal.integrated.shell.linux": "/bin/zsh",
+    "go.toolsManagement.autoUpdate": true,
+    "go.toolsEnvVars": {
+        "GOPROXY": "https://goproxy.cn",
+        "GOPATH": "/home/I336589/git/go"
+    },
+    "terminal.integrated.env.linux": {
+        "GOPROXY": "https://goproxy.cn",
+        "GOPATH": "/home/I336589/git/go"
+    }        
 
 }
 ``` 
