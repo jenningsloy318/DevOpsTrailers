@@ -365,7 +365,20 @@ feat: add hat wobble
   ```
 
 
+# pull request to exclude certain directories/files
 
+actually it is impossible to do this directory, but we can use `.gitattributes` for a walkaround.
+
+for example, 
+- setting the file `Jenkingsfile` to `linguist-generated=true` 
+- setting the directory recursively `.pipeline/**/**` to `linguist-generated=true`
+- and then git pull request will not compare the file `Jenkingsfile` and directory `.pipeline/` when creating a pull request.
+
+    ```shell
+    $ cat .gitattributes
+    .pipeline/**/** linguist-generated=true
+    Jenkingsfile  linguist-generated=true
+    ```
 
 
 
