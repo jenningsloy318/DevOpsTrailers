@@ -161,13 +161,121 @@ when a the MTU of the sender is bigger than the path MTU on the path to destinat
       - 17= UDP
    - but we can directly use tcp to filter tcp packet, udp for udp packet, not doing here
 ### Understand TCP header
-   Each TCP header has 10 required fields totaling 20 bytes (160 bits) in size. It can optionally include an additional data field up to 40 bytes in size.
-   ![tcp header](./images/tcp-header.jpg)
+   Each TCP header has 10 required fields totally 20 bytes (160 bits) in size. It can optionally include an additional data field up to 40 bytes in size.
+   ![tcp header](./images/tcp-header.png)
+- Source Port number:  2 bytes, 16 bits
+- Destination Port number:  2 bytes, 16 bits
+- Sequence Number: 4 bytes, 32 bits
+    
+    The sequence number of the first data byte in this segment. If the SYN bit is set, the sequence number is the initial sequence number and the first data byte is initial sequence number + 1.
+
+
+- Acknowledgment Number: 4 bytes, 32 bits
+  
+  If the ACK bit is set, this field contains the value of the next sequence number the sender of the segment is expecting to receive. Once a connection is established this is always sent.
+
+- Data Offset. 4 bits.
+
+    The number of 32-bit words in the TCP header. This indicates where the data begins. The length of the TCP header is always a multiple of 32 bits.
+- reserved. 3 bits.
+
+    Must be cleared to zero.
+
+- ECN, Explicit Congestion Notification. 3 bits.
+
+    00|	01|	02
+    -|  - | -
+    N|	C | E
+
+
+    > - N, NS, Nonce Sum(concealment protection) 1 bit : This is an optional field added to ECN intended to protect against accidental or malicious concealment of marked packets from the TCP sender.
+
+    > - C, CWR(congestion window has been reduced) 1 bit: Indicates that the sending host has received a TCP segment with the ECE flag set. The congestion window is an internal variable maintained by TCP to manage the size of the send window. 
+
+
+    > - E, ECE, ECN-Echo. 1 bit: TCP peer is ECN-capable,Indicates that a TCP peer is ECN-capable during the TCP 3-way handshake and to indicate that a TCP segment was received on the connection with the ECN field in the IP header set to 11.
 
 
 
+ 
+
+- Control Bits. 6 bits.
+
+    00|	01|	02|	03|	04|	05
+    - | - | - | - | - | - 
+    U |	A | P | R | S | F
+
+    > - U, URG. 1 bit: Urgent pointer valid flag.
+
+    > - A, ACK. 1 bit: Acknowledgment number valid flag.
+
+    > - P, PSH. 1 bit: Push flag.
+
+    >- R, RST. 1 bit: Reset connection flag.
+
+    > - S, SYN. 1 bit: Synchronize sequence numbers flag.
+
+    > - F, FIN. 1 bit: End of data flag.
+    
+    > -  Only the PSH, RST, SYN, and FIN flags are displayed in tcpdump‘s flag field output. URGs and ACKs are displayed, but they are shown elsewhere in the output rather than in the flags field 
+
+    > - Keep in mind the reasons these filters work. The filters above find these various packets because tcp[13] looks at offset 13 in the TCP header, the number represents the location within the byte, and the !=0 means that the flag in question is set to 1, i.e. it’s on.
+    
+    examples:
+
+    - Show all URG packets:
+        ```
+        # tcpdump 'tcp[13] & 32 != 0'
+        ````
+    - Show all ACK packets:
+        ```
+        # tcpdump 'tcp[13] & 16 != 0'
+        ```
+    - Show all PSH packets:
+        ```
+        # tcpdump 'tcp[13] & 8 != 0'
+        ```
+    - Show all RST packets:
+        ```
+        # tcpdump 'tcp[13] & 4 != 0'
+        ```
+
+    - Show all SYN packets:
+        ```
+        # tcpdump 'tcp[13] & 2 != 0'
+        ```
+
+    - Show all FIN packets:
+        ```
+        # tcpdump 'tcp[13] & 1 != 0'
+        ```
+    - Show all SYN-ACK packets:
+        ```
+        # tcpdump 'tcp[13] = 18'
+        ```
+- Window. 16 bits, unsigned.
+
+    The number of data bytes beginning with the one indicated in the acknowledgment field which the sender of this segment is willing to accept.
+
+- Checksum. 16 bits.
+
+    This is computed as the 16-bit one's complement of the one's complement sum of a pseudo header of information from the IP header, the TCP header, and the data, padded as needed with zero bytes at the end to make a multiple of two bytes. The pseudo header contains the following fields:
 
 
+- Urgent Pointer. 16 bits, unsigned.
+
+    If the URG bit is set, this field points to the sequence number of the last byte in a sequence of urgent data.
+- Options. 0 to 40 bytes.
+
+    Options occupy space at the end of the TCP header. All options are included in the checksum. An option may begin on any byte boundary. The TCP header must be padded with zeros to make the header length a multiple of 32 bits.
+
+### Understand UDP header
+UDP header (UDP header has just 8 bytes)
+   ![udp header](images/udp-header.gif)
+- source port: Source Port is a 2 Byte long field used to identify the port number of the source.
+- destination port: It is a 2 Byte long field, used to identify the port of the destined packet.
+- Length: It is the length of UDP including the header and the data. It is a 16-bits field.
+- Checksum: It is 2 Bytes long field. It is the 16-bit one’s complement of the one’s complement sum of the UDP header, the pseudo-header of information from the IP header, and the data, padded with zero octets at the end (if necessary) to make a multiple of two octets.
 
 
 ### Links
