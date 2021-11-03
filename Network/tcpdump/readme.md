@@ -278,6 +278,274 @@ UDP header (UDP header has just 8 bytes)
 - Checksum: It is 2 Bytes long field. It is the 16-bit one’s complement of the one’s complement sum of the UDP header, the pseudo-header of information from the IP header, and the data, padded with zero octets at the end (if necessary) to make a multiple of two octets.
 
 
+### understand ICMP header
+
+ICMP header has two parts. The first four bytes are available for all types of ICMP messages. The first four bytes contains "Type", "Code" and "Checksum" fields in an ICMP header. First four bytes of ICMP header is shown below.
+
+![icmp basic header](./images/icmp-header-basic.png)
+
+- Type and Code : The following table shows the values which are possible for the Type and Code fields in the Internet Control Message Protocol (ICMP) header.
+
+
+    <table class="omni-default-table para-center">
+    <tbody><tr>
+      <th>Type Number</th>
+      <th>Code</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>0 - Echo Reply</td>
+      <td>0</td>
+      <td>Echo reply (used for Ping/Tracert etc)</td>
+    </tr>
+    <tr>
+      <td>1 and 2</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Reserved</td>
+    </tr>
+    <tr>
+      <td rowspan="14">3 - Destination unreachable</td>
+      <td>0</td>
+      <td>Destination network unreachable</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Destination host unreachable</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Destination protocol unreachable</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Destination <a href="https://www.omnisecu.com/tcpip/tcp-port-numbers.php" target="_blank" class="inside-link">port</a> unreachable</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><a href="https://www.omnisecu.com/tcpip/internet-layer.php" target="_blank" class="inside-link">Fragmentation</a> required, and <a href="https://www.omnisecu.com/tcpip/internet-layer.php" target="_blank" class="inside-link">DF</a> set</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Source route failed</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Destination network unknown</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Destination host unknown</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Source host isolated</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Network administratively prohibited</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Host administratively prohibited</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>Network unreachable for Type Of Service</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>Host unreachable for Type of Service</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>Administratively prohibited</td>
+    </tr>
+    <tr>
+      <td>4 - Source Quench</td>
+      <td>0</td>
+      <td>Traffic Congestion Control</td>
+    </tr>
+    <tr>
+      <td rowspan="4">5 - Redirect Message</td>
+      <td>0</td>
+      <td>Redirect Datagram for the Network</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Redirect Datagram for the Host</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Redirect Datagram for the Type of Service &amp; network</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Redirect Datagram for the Type of Service &amp; host</td>
+    </tr>
+    <tr>
+      <td>6 - Alternate Host Address</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Alternate Host Address - Deprecated</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Reserved</td>
+    </tr>
+    <tr>
+      <td>8 - Echo Request</td>
+      <td>0</td>
+      <td>Echo request</td>
+    </tr>
+    <tr>
+      <td>9 - Router Advertisement</td>
+      <td>0</td>
+      <td>Router Advertisement</td>
+    </tr>
+    <tr>
+      <td>10 - Router Solicitation</td>
+      <td>0</td>
+      <td>Router discovery/selection/solicitation</td>
+    </tr>
+    <tr>
+      <td rowspan="2">11 - Time Exceeded</td>
+      <td>0</td>
+      <td>TTL expired</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Fragment reassembly time exceeded</td>
+    </tr>
+    <tr>
+      <td rowspan="3">12 - Parameter Problem</td>
+      <td>0</td>
+      <td>Pointer indicates the error</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Missing a required option</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Bad length</td>
+    </tr>
+    <tr>
+      <td>13 - Timestamp Request</td>
+      <td>0</td>
+      <td>Timestamp Request</td>
+    </tr>
+    <tr>
+      <td>14 - Timestamp Reply</td>
+      <td>0</td>
+      <td>Timestamp Reply</td>
+    </tr>
+    <tr>
+      <td>15 - Information Request</td>
+      <td>0</td>
+      <td>Information Request</td>
+    </tr>
+    <tr>
+      <td>16 - Information Reply</td>
+      <td>0</td>
+      <td>Information Reply</td>
+    </tr>
+    <tr>
+      <td>17 - Address Mask Request</td>
+      <td>0</td>
+      <td>Address Mask Request</td>
+    </tr>
+    <tr>
+      <td>18 - Address Mask Reply</td>
+      <td>0</td>
+      <td>Address Mask Reply</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Reserved for security</td>
+    </tr>
+    <tr>
+      <td>20 through 29</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Reserved for robustness experiment</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>0</td>
+      <td>Information Request</td>
+    </tr>
+    <tr>
+      <td>31</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Datagram Conversion Error</td>
+    </tr>
+    <tr>
+      <td>32</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Mobile Host Redirect</td>
+    </tr>
+    <tr>
+      <td>33</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Where-Are-You</td>
+    </tr>
+    <tr>
+      <td>34</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Here-I-Am</td>
+    </tr>
+    <tr>
+      <td>35</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Mobile Registration Request</td>
+    </tr>
+    <tr>
+      <td>36</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Mobile Registration Reply</td>
+    </tr>
+    <tr>
+      <td>37</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Domain Name Request</td>
+    </tr>
+    <tr>
+      <td>38</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Domain Name Reply</td>
+    </tr>
+    <tr>
+      <td>39 - SKIP Algorithm</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>SKIP Algorithm Discovery Protocol</td>
+    </tr>
+    <tr>
+      <td>40 - Photuris protocol</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Photuris (Firefly) security protocol</td>
+    </tr>
+    <tr>
+      <td>41</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>ICMP for experimental mobility protocols such as Seamoby</td>
+    </tr>
+    <tr>
+      <td>42 through 255</td>
+      <td><p class="para-center">&nbsp;</p></td>
+      <td>Reserved</td>
+    </tr>
+    </tbody></table>
+- Checksum : The checksum field in the Internet Control Message Protocol (ICMP) message contains error checking data calculated from the Internet Control Message Protocol (ICMP) header+data, with value 0 for this field.
+
+- The contents of the remaining part of ICMP packet depends on the ICMP message type. For example; ID (identifier) and SEQUENCE (sequence number) fields are the next four bytes (32 bits) after Type, Code and Checksum fields in an Echo Request and Echo reply ICMP message. Please refer below image.
+
+![icmp header 01](./images/icmp-header-01.png)
+
+- ID : The ID field in the Internet Control Message Protocol (ICMP) message contains an ID value, should be returned in case of ECHO REPLY.
+
+- Sequence number : The sequence number field in the Internet Control Message Protocol (ICMP) message is the sequence number for each host, and is incremented by 1 for each packet.
+
+
 ### Links
 - https://unit42.paloaltonetworks.com/wireshark-tutorial-decrypting-https-traffic/
 - https://sites.google.com/site/jimmyxu101/testing/use-tcpdump-to-monitor-http-traffic
