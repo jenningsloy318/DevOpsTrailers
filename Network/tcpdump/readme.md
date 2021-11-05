@@ -42,7 +42,7 @@ recently I need to use tool to find the wechat content history of official accou
    - The first half of first byte(Version):
       - if `0100`: `4`: means ipv4
    - The second half of first byte(IHL)
-      - if `0101` = `5` in decimal. This is the number of blocks of 32 bits in the headers. 5 x 32 bits = 160 bits or 20 bytes.
+      - if `0101` = `5` in decimal. This is the number of blocks(`word`) of 32 bits in the headers. 5 x 32 bits = 160 bits or 20 bytes.
       - indicates the header lenth
    - to calculate first byte in decimal, `01000101`: is `69`, a typical IPv4 first byte is `69`
    - any value that larger than `69` means
@@ -53,21 +53,33 @@ recently I need to use tool to find the wechat content history of official accou
       tcpdump -i eth1 'ip[0] > 69'
       ```
       > not really, because possiblly it is a ipv6 packet
-   - the proper way, "masking" the first half of the byte
+      - the proper way, "masking" the first half of the byte
+          ```
+          0100 0101 : 1st byte originally
+          0000 1111 : mask
+          =========
+          0000 0101 : final result
+          ```
+          >  (0xf in hex or 15 in decimal). 0 will mask the values while 1 will keep the values  intact
+          In binary,so it should be
+          ```
+          # tcpdump -i eth1 'ip[0] & 15 > 5'
+          ```
+          or in hexadecimal
+          ```
+          # tcpdump -i eth1 'ip[0] & 0xf > 5'
+          
+          ```
+
+    - to calculate the lenth of IP header in `words`
       ```
-      0100 0101 : 1st byte originally
-      0000 1111 : mask
-      =========
-      0000 0101 : final result
+      # tcpdump -i eth1 'ip[0] & 0xf'
+      
       ```
-      >  (0xf in hex or 15 in decimal). 0 will mask the values while 1 will keep the values intact
-      In binary,so it should be 
+      transform to bytes
       ```
-      # tcpdump -i eth1 'ip[0] & 15 > 5'
-      ```
-      or in hexadecimal
-      ```
-      # tcpdump -i eth1 'ip[0] & 0xf > 5'
+      # tcpdump -i eth1 'ip[0] & 0xf <<2'
+      
       ```
    - recap
       - keep the last 4 bits intact, use 0xf (binary 00001111)
@@ -115,8 +127,13 @@ recently I need to use tool to find the wechat content history of official accou
       AF43	|100110|	38	|[RFC2597]|Flash Override
       EF    |101110|	46	|[RFC3246] |Critical
       VOICE-ADMIT | 101100 |	44|[RFC5865]
+- Total Lenth
+    Specifies the length of the IP packet that includes the IP header and the user data. The length field is 2 bytes, so the maximum size of an IP packet is 216 – 1 or 65,535 bytes.
 
-
+    ```
+    tcpdump ip[2:2] 
+    ```
+    will result in the total lenth of the IP packet 
 
 - DF bit (don't fragment) set ?
 
@@ -197,6 +214,15 @@ when a the MTU of the sender is bigger than the path MTU on the path to destinat
     The purpose of the data offset is to tell the upper layers where the data starts. As you point out, the TCP header can be anywhere from 5-15 words long. So you need to know where the header ends and the data begins.
 
     `word` unit is defined as 32 bits, So a header 5 words long is 20 bytes and a 15 words header is 60 bytes.
+    
+    to calculate the lenth of tcp header in `words`
+    ```
+    tcpdumc tcp[12]&0xf0)
+    ```
+    or in bytes
+     ```
+    tcpdumc tcp[12]&0xf0)>>2
+    ```   
 - reserved. 3 bits.
 
     Must be cleared to zero.
@@ -738,3 +764,4 @@ ICMP header has two parts. The first four bytes are available for all types of I
 - https://tls.ulfheim.net/
 - https://github.com/syncsynchalt/illustrated-tls13
 - https://tls13.ulfheim.net/
+- https://floatingoctothorpe.uk/2018/detecting-uptime-from-tcp-timestamps.html
