@@ -765,3 +765,4 @@ ICMP header has two parts. The first four bytes are available for all types of I
 - https://github.com/syncsynchalt/illustrated-tls13
 - https://tls13.ulfheim.net/
 - https://floatingoctothorpe.uk/2018/detecting-uptime-from-tcp-timestamps.html
+- http://www.tcpipguide.com/free/index.htm
