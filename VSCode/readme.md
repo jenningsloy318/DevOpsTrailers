@@ -37,54 +37,46 @@ vscod-mindmap
 2. Settings
 ```json
 {
-    "markdown-preview-enhanced.codeBlockTheme": "github.css",
-    "workbench.editor.enablePreview": false,
-    "workbench.activityBar.visible": true,
-    "workbench.statusBar.visible": true,
-    "workbench.sideBar.location": "left",
-    "files.eol": "\n",
-    "editor.minimap.enabled": false,
+    "window.zoomLevel": -1,
     "editor.wordWrap": "on",
-    "window.zoomLevel": 0,
-    "editor.acceptSuggestionOnEnter": true,
-    "editor.tabCompletion": true,
-    "workbench.startupEditor": "newUntitledFile",
-    "extensions.ignoreRecommendations": true,
-    "extensions.showRecommendationsOnlyOnDemand": true,
-    "git.ignoreMissingGitWarning": true,
-    "workbench.editor.tabSizing": "fit",
-    "workbench.editor.showTabs": true,
+    "editor.fontFamily": "'Noto Sans Mono CJK SC'",
+    "editor.minimap.enabled": false,
+    "editor.fontSize": 30,
+    "terminal.integrated.fontSize": 20,
+    "editor.codeActionsOnSave": {},
+    "go.testOnSave": true,
+    "go.lintOnSave": "package",
+    "go.formatTool": "goimports",
+    "go.testFlags": ["-v"],
     "go.autocompleteUnimportedPackages": true,
-    "workbench.editor.tabCloseButton": "left",
-    "editor.tabSize": 2,
-    "files.exclude": {
-    "**/.git": false,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
-    "**/.DS_Store": true
-    },
-    "editor.suggestSelection": "first",
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-    "openInApplication.applications": {
-          "docx": "wps", 
-          "doc": "wps",
-          "ppt": "wpp",
-          "pptx": "wpp",
-          "xls": "et",
-          "xlsx": "et"
-        },
-    "terminal.integrated.shell.linux": "/bin/zsh",
     "go.toolsManagement.autoUpdate": true,
     "go.toolsEnvVars": {
         "GOPROXY": "https://goproxy.cn",
-        "GOPATH": "/home/I336589/git/go"
+        "GOPATH": "/home/jenningsl/git/go"
     },
-    "terminal.integrated.env.linux": {
-        "GOPROXY": "https://goproxy.cn",
-        "GOPATH": "/home/I336589/git/go"
-    }        
-
+    "[go]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },    
+        "editor.suggest.snippetsPreventQuickSuggestions": false
+    },
+    "gopls": {
+        "build.experimentalWorkspaceModule": true
+    },
+    "files.exclude": {
+        "**/go/pkg": true,
+        "**/go/deps": true,
+        "**/go/bin": true,
+        "**/.history": true,
+        "**/.vscode": true,
+    },
+    "editor.tabSize": 2,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "explorer.openEditors.sortOrder": "alphabetical",
+    "workbench.tree.indent": 25,
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "editor.cursorSurroundingLines": 1
 }
 ``` 
 
