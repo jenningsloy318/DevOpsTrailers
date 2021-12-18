@@ -156,3 +156,8 @@ wholroyd.jinja
       },
 }
 ```
+
+
+Links:
+- https://www.huweihuang.com/linux-notes/keymap/vscode-keymap.html
+- https://toutiao.io/posts/7w5ixl/preview
