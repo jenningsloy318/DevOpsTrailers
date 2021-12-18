@@ -1,0 +1,66 @@
+{
+  "window.zoomLevel": -1,
+  "editor.wordWrap": "on",
+  "editor.cursorSurroundingLines": 1,
+  "editor.cursorStyle": "line",
+  "editor.fontFamily": "'Source Code Pro','Menlo','Noto Sans Mono CJK SC'",
+  "editor.minimap.enabled": false,
+  "editor.fontSize": 20,
+  "editor.renderLineHighlight": "none",
+  "editor.lineHeight": 2,
+  "editor.lineNumbers": "on",
+  "editor.codeActionsOnSave": {},
+  "editor.detectIndentation": false,
+  "editor.renderWhitespace": "all",
+  "editor.roundedSelection": false,
+  "editor.tabSize": 2,
+  "extensions.autoUpdate": true,
+  "go.testOnSave": true,
+  "go.lintOnSave": "package",
+  "go.vetOnSave": "package",
+  "go.formatTool": "goimports",
+  "go.testFlags": ["-v"],
+  "go.inferGopath": true,
+  "go.gotoSymbol.includeImports": true,
+  "go.useCodeSnippetsOnFunctionSuggest": true,
+  "go.useCodeSnippetsOnFunctionSuggestWithoutType": true,
+  "go.docsTool": "gogetdoc",
+  "go.autocompleteUnimportedPackages": true,
+  "go.toolsManagement.autoUpdate": true,
+  "go.lintTool": "golint",
+  "go.toolsEnvVars": {
+      "GOPROXY": "https://goproxy.cn",
+      "GOPATH": "/home/jenningsl/development/go"
+  },
+  "[go]": {
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+          "source.organizeImports": true
+      },
+      "editor.suggest.snippetsPreventQuickSuggestions": false,
+      "editor.defaultFormatter": "golang.go"
+  },
+  "gopls": {
+      "build.experimentalWorkspaceModule": true
+  },
+  "files.exclude": {
+      "**/go/pkg": true,
+      "**/go/deps": true,
+      "**/go/bin": true,
+      "**/.history": true,
+      "**/.vscode": true,
+      "**/Learning How to Learn": true
+  },
+  "diffEditor.ignoreTrimWhitespace": false,
+  "explorer.openEditors.sortOrder": "alphabetical",
+  "workbench.tree.indent": 25,
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "terminal.integrated.fontSize": 20,
+  "workbench.colorTheme": "One Dark Pro",
+  "workbench.iconTheme": "vscode-icons",
+  "sync.gist": "vscode-settings.json",
+  "sync.autoDownload": true,
+  "sync.autoUpload": true,
+  "sync.forceUpload": false,
+  "sync.quietSync": true,
+} 
