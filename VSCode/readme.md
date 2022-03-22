@@ -157,6 +157,11 @@ wholroyd.jinja
 }
 ```
 
+3. groovy lint configure [.groovylintrc.json](./.groovylintrc.json)
+    this file should be placed in the project root/subdirectory, which is project based, not user based
+    - <https://codenarc.org/codenarc-rule-index.html>
+    - <https://github.com/CodeNarc/CodeNarc/blob/master/.groovylintrc.json>
+
 
 Links:
 - https://www.huweihuang.com/linux-notes/keymap/vscode-keymap.html

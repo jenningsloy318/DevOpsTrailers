@@ -1,0 +1,32 @@
+{
+    "extends": "recommended",
+    "rules": {
+        "SpaceAfterClosingBrace": {
+            "enabled": false
+        },
+        "UnnecessaryReturnKeyword": "error",
+        "comments.ClassJavadoc": "off",
+        "formatting.Indentation": {
+            "spacesPerIndentLevel": 4,
+            "severity": "info"
+        },
+        "LineLength": {
+            "enabled": false
+        },
+        "DuplicateStringLiteral": {
+            "enabled": false
+        },
+        "DuplicateNumberLiteral": {
+            "enabled": false
+        },
+        "SpaceBeforeOpeningBrace": {
+            "enabled": false
+        },
+        "DuplicateMapLiteral": {
+            "enabled": false
+        },
+        "DuplicateListLiteral": {
+            "enabled": false
+        }
+    }
+}
