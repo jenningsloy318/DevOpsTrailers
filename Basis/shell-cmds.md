@@ -99,10 +99,15 @@ users.json:
     "projectToken": "3d5bc26696d846af82e37d512a2976"
   }
   ```
+# filter out a image from kubernetes deployment 
+    ```
+    export deploy=message-srv
+    export container=message-srv
+    kubectl get deploy $deploy  -n integration -o json | jq --arg container $container '.spec.template.spec.containers[]| select(.name|test($container))|.image'
+    ```
+1. in shell scripts, use `read -n 1 -s -r -p "Press any key to continue"` to implement stop/contine actions
 
-3. in shell scripts, use `read -n 1 -s -r -p "Press any key to continue"` to implement stop/contine actions
-
-4. to search packages dependencies provides by `pkgconfig(Qt5Widgets) is needed by xxxx`
+2. to search packages dependencies provides by `pkgconfig(Qt5Widgets) is needed by xxxx`
     ```
     The pkg-config files are usually provided by the -devel package so in most cases foo.pc is provided by libfoo-devel. That's still guesswork, but there are two shortcuts:
 
