@@ -1,10 +1,10 @@
 cmake
 ---
-1. build and install 
+1. build and install
     ```
-    cmake -B build-dir -S source-dir
-    cmake --build build-dir  
-    cmake --install build-dir 
+    cmake --fresh  -B build-dir -S source-dir
+    cmake --build build-dir
+    cmake --install build-dir
     ```
 2. uninstall if `install_manifest.txt` is created in `build-dir`
    ```
