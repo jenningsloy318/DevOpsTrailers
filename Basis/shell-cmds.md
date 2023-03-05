@@ -178,6 +178,12 @@ users.json:
   ffmpeg -hwaccel cuda   -i input-video.webm -i input-audio.webm  -c:v h264_nvenc -c:a libmp3lame output.mp4
   ```
 
+- use ffmpeg to embed subtitles
+
+  ```sh
+  ffmpeg -y -loglevel repeat+info -i file:input.mp4 -i file:input.en.vtt -map 0 -dn -ignore_unknown -c copy -c:s mov_text -map -0:s -map 1:0 -metadata:s:s:0 language=eng -metadata:s:s:0 handler_name=English -metadata:s:s:0 title=English -movflags +faststart file:output.mp4
+  ```
+
 1. for loop to deal with files with spaces in names in
 
 - in zsh
