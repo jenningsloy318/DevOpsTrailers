@@ -184,7 +184,7 @@ users.json:
   ffmpeg -y -loglevel repeat+info -i file:input.mp4 -i file:input.en.vtt -map 0 -dn -ignore_unknown -c copy -c:s mov_text -map -0:s -map 1:0 -metadata:s:s:0 language=eng -metadata:s:s:0 handler_name=English -metadata:s:s:0 title=English -movflags +faststart file:output.mp4
   ```
 
-1. for loop to deal with files with spaces in names in
+7. for loop to deal with files with spaces in names in
 
 - in zsh
 
@@ -203,3 +203,14 @@ users.json:
     ls -l "$file"
   done
   ```
+8. mpv with hardware acceleration, modify or create `/.config/mpv/mpv.conf`
+  ```
+  vo=gpu
+  hwdec=nvdec
+  ```
+  or 
+  ```
+  vo=gpu
+  hwdec=nvdec-copy
+  ```
+  
