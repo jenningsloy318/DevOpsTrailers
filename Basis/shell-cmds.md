@@ -1,106 +1,119 @@
-jq -- command to extract fields from json
+Shell Commands and Tips
 ---
 
-1. extract muliple fields as strings
+1. extract items from json via jq
 
-users.json:
-```json
-{
-    "users": [
+- users.json:
+
+    ```json
+    {
+        "users": [
+            {
+                "first": "Stevie",
+                "last": "Wonder"
+            },
+            {
+                "first": "Michael",
+                "last": "Jackson"
+            }
+        ]
+    }
+    ```
+
+- extract muliple fields as strings
+
+    ```shell
+    #cat users.json | jq '.users[]|.first'
+
+    "Stevie"
+    "Michael"
+    ```
+
+
+- extract muliple fields as new json/dict
+
+    ```shell
+    #cat users.json | jq '{.users[]|{"first":.first}}'
+    {
+    "first": "Stevie"
+    }
+    {
+    "first": "Michael"
+    }
+    ```
+
+- also we can use regex, find fields which first name contains `M`
+
+    ```shell
+    # cat users.json |jq -r  '.users[]|select(.first|test(".*M.*"))'
+    {
+    "first": "Michael",
+    "last": "Jackson"
+    }
+    ```
+
+    or
+
+    ```shell
+    #cat users.json |jq -r  '.users[]|select(.first|test(".*M.*"))|.last'
+    Jackson
+    ```
+
+    another example `project.json`
+
+    ```json
+    {
+        "projects": [
         {
-            "first": "Stevie",
-            "last": "Wonder"
+            "projectId": 4407472,
+            "projectName": "acb-dev",
+            "projectToken": "585742c994f74949dbbbcd987ea94"
         },
         {
-            "first": "Michael",
-            "last": "Jackson"
+            "projectId": 4422028,
+            "projectName": "acb-2108",
+            "projectToken": "3d5bc26696d846af82e37d512a2976"
+        },
+        {
+            "projectId": 4422029,
+            "projectName": "acb-test",
+            "projectToken": "3d5bc26696d846af82e37d512a2946"
+        },
+        {
+            "projectId": 4422030,
+            "projectName": "bcd-dev",
+            "projectToken": "3d5bc26696d846af82e37d512a2974"
+        },
+        {
+            "projectId": 4422031,
+            "projectName": "bcd-test",
+            "projectToken": "3d5bc26696d846af82e37d512a2974"
+        },
+        {
+            "projectId": 4422032,
+            "projectName": "bcd-2108",
+            "projectToken": "3d5bc26696d846af82e37d512c2974"
         }
-    ]
-}
-```
+        ],
+        "platform": "aws"
+    }
+    ```
 
-```shell
-#cat users.json | jq '.users[]|.first'
-
-"Stevie"
-"Michael"
-```
-
-
-2. extract muliple fields as new json/dict
-```shell
-#cat users.json | jq '{.users[]|{"first":.first}}'
-{
-  "first": "Stevie"
-}
-{
-  "first": "Michael"
-}
-```
- also we can use regex, find fields which first name contains `M`
- ```shell
- # cat users.json |jq -r  '.users[]|select(.first|test(".*M.*"))'
- {
-  "first": "Michael",
-  "last": "Jackson"
-  }
-
- #cat users.json |jq -r  '.users[]|select(.first|test(".*M.*"))|.last'
- Jackson
- ```
-  another example `project.json`
-  ```json
-  {
-    "projects": [
-      {
+    ```shell
+    # cat project.json|jq  -r '.projects[] |select(.projectName|test(".*acb.*"))|select(.projectName|test(".*^(dev|2108)$"))'
+    {
         "projectId": 4407472,
         "projectName": "acb-dev",
         "projectToken": "585742c994f74949dbbbcd987ea94"
-      },
-      {
+    }
+    {
         "projectId": 4422028,
         "projectName": "acb-2108",
         "projectToken": "3d5bc26696d846af82e37d512a2976"
-      },
-      {
-        "projectId": 4422029,
-        "projectName": "acb-test",
-        "projectToken": "3d5bc26696d846af82e37d512a2946"
-      },
-      {
-        "projectId": 4422030,
-        "projectName": "bcd-dev",
-        "projectToken": "3d5bc26696d846af82e37d512a2974"
-      },
-      {
-        "projectId": 4422031,
-        "projectName": "bcd-test",
-        "projectToken": "3d5bc26696d846af82e37d512a2974"
-      },
-      {
-        "projectId": 4422032,
-        "projectName": "bcd-2108",
-        "projectToken": "3d5bc26696d846af82e37d512c2974"
-      }
-    ],
-    "platform": "aws"
-  }
-  ```
-  ```shell
-  # cat project.json|jq  -r '.projects[] |select(.projectName|test(".*acb.*"))|select(.projectName|test(".*^(dev|2108)$"))'
-  {
-    "projectId": 4407472,
-    "projectName": "acb-dev",
-    "projectToken": "585742c994f74949dbbbcd987ea94"
-  }
-  {
-    "projectId": 4422028,
-    "projectName": "acb-2108",
-    "projectToken": "3d5bc26696d846af82e37d512a2976"
-  }
-  ```
+    }
+    ```
 
-# filter out a image from kubernetes deployment
+2. filter out a image from kubernetes deployment
 
     ```
     export deploy=message-srv
@@ -108,9 +121,9 @@ users.json:
     kubectl get deploy $deploy  -n integration -o json | jq --arg container $container '.spec.template.spec.containers[]| select(.name|test($container))|.image'
     ```
 
-1. in shell scripts, use `read -n 1 -s -r -p "Press any key to continue"` to implement stop/contine actions
+3. in shell scripts, use `read -n 1 -s -r -p "Press any key to continue"` to implement stop/contine actions
 
-2. to search packages dependencies provides by `pkgconfig(Qt5Widgets) is needed by xxxx`
+4. to search packages dependencies provides by `pkgconfig(Qt5Widgets) is needed by xxxx`
 
     ```sh
     The pkg-config files are usually provided by the -devel package so in most cases foo.pc is provided by libfoo-devel. That's still guesswork, but there are two shortcuts:
@@ -184,7 +197,21 @@ users.json:
   ffmpeg -y -loglevel repeat+info -i file:input.mp4 -i file:input.en.vtt -map 0 -dn -ignore_unknown -c copy -c:s mov_text -map -0:s -map 1:0 -metadata:s:s:0 language=eng -metadata:s:s:0 handler_name=English -metadata:s:s:0 title=English -movflags +faststart file:output.mp4
   ```
 
-7. for loop to deal with files with spaces in names in
+7. mpv with hardware acceleration, modify or create `/.config/mpv/mpv.conf`
+
+    ```
+    vo=gpu
+    hwdec=nvdec
+    ```
+
+    or
+
+    ```
+    vo=gpu
+    hwdec=nvdec-copy
+    ```
+
+8. for loop to deal with files with spaces in names in
 
 - in zsh
 
@@ -203,14 +230,4 @@ users.json:
     ls -l "$file"
   done
   ```
-8. mpv with hardware acceleration, modify or create `/.config/mpv/mpv.conf`
-  ```
-  vo=gpu
-  hwdec=nvdec
-  ```
-  or 
-  ```
-  vo=gpu
-  hwdec=nvdec-copy
-  ```
-  
+
