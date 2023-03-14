@@ -13,6 +13,12 @@ nvidia-docker
     sudo dnf install nvidia-docker2
     ```
 
+    Edit `/etc/nvidia-container-runtime/config.toml` and disable cgroups:
+
+    ```
+    no-cgroups = true
+    ```
+
 3. run nvidia docker
 
    ```
