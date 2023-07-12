@@ -1,5 +1,30 @@
+---
 
-- name: install new dns conf
-  template:
-    src: resolv.conf.j2
+- name: make sure line 'dns=none' is set in /etc/NetworkManager/NetworkManager.conf
+  ini_file:
+      path: /etc/NetworkManager/NetworkManager.conf
+      state: present
+      no_extra_spaces: yes
+      section: main
+      option: dns
+      value: none
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+- name: restart networkManager
+  systemd:
+    name: NetworkManager
+    state: restarted
+
+- name: configure DNS client
+  copy:
+    src: oob-resolv.conf
     dest: /etc/resolv.conf
+  when:  ansible_default_ipv4.address | ipaddr('10.36.47.0/24') | ipaddr('bool')
+
+- name: configure DNS client
+  copy:
+    src: inb-resolv.conf
+    dest: /etc/resolv.conf
+  when:  ansible_default_ipv4.address | ipaddr('10.36.52.0/24') | ipaddr('bool')
