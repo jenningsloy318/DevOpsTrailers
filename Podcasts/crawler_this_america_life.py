@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup,Tag
 # URL of the archive page
 for pageNum in range(1, 10):
     url = 'https://www.thisamericanlife.org/archive'+'?page='+pageNum
+    print(f"Processing page: {url}")
     # Create a folder to save the audio and transcript files
     os.makedirs('this_american_life', exist_ok=True)
 
