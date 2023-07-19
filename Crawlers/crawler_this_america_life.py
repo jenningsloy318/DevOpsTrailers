@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup,Tag
 
 # URL of the archive page
 for pageNum in range(1, 10):
-    url = 'https://www.thisamericanlife.org/archive'+'?page='+pageNum
+    url = 'https://www.thisamericanlife.org/archive'+'?page='+str(pageNum)
     print(f"Processing page: {url}")
     # Create a folder to save the audio and transcript files
     os.makedirs('this_american_life', exist_ok=True)
@@ -47,11 +47,39 @@ for pageNum in range(1, 10):
 
         # Download the transcript file
         transcript_response = requests.get(transcript_link)
+        transcript_soup = BeautifulSoup(transcript_response.text, 'html.parser')
+        iframe = transcript_soup.find_all('iframe',id="odh-popup")
+        for item in iframe:
+            item.decompose()
+        footer=transcript_soup.find_all('footer',id="footer")
+        for item in footer:
+            item.decompose()
+        header=transcript_soup.find_all('header',id="site-header",role="banner")
+        for item in header:
+            item.decompose()
+        player=transcript_soup.find_all('div',id="player")
+        for item in player:
+            item.decompose()
+        meta=transcript_soup.find_all('div',class_="transcript__meta")
+        for item in meta:
+            item.decompose()
+        script=transcript_soup.find_all('script')
+        for item in script:
+            item.decompose()
+        href=transcript_soup.find_all('a')
+        for item in href:
+            del item['href']
+
+
+        #print(transcript_content)
         transcript_filename = os.path.basename(episode_name+'.html')
         transcript_filepath = os.path.join('this_american_life', transcript_filename)
-        with open(transcript_filepath, 'wb') as transcript_file:
-            transcript_file.write(transcript_response.content)
+
+        with open(transcript_filepath, 'w') as transcript_file:
+           transcript_file.write(transcript_soup.prettify())
+
+
 
         print(f"Downloaded: {audio_filename} and {transcript_filename}")
 
-    print("Scraping completed.")
+print("Scraping completed.")
