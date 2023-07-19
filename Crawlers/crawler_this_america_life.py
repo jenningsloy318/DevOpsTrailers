@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup,Tag
 
 # URL of the archive page
-for pageNum in range(1, 10):
+for pageNum in range(0, 10):
     url = 'https://www.thisamericanlife.org/archive'+'?page='+str(pageNum)
     print(f"Processing page: {url}")
     # Create a folder to save the audio and transcript files
