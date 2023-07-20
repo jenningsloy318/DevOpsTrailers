@@ -16,10 +16,12 @@ for pageNum in range(0, 10):
     os.makedirs('ideacast', exist_ok=True)
     chrome_options = webdriver.ChromeOptions()
     #chrome_options.add_argument("--headless")
-    chrome_options.add_argument("user-data-dir=selenium")
+    chrome_options.add_argument("user-data-dir=/Users/I336589/Library/Application Support/Google/Chrome")
+    #tampermonkey_ext_path = os.path.dirname(r"/Users/I336589/Library/Application Support/Google/Chrome/Default/Extensions/dhdgffkkebhmkfjojejmpbldmpobfkfo/4.19.0_0/")
+    #chrome_options.add_argument(f"--load-extension={tampermonkey_ext_path}")
     driver = webdriver.Chrome(options=chrome_options)
+    # tampermonky script: https://github.com/LegeBeker/bypass-paywalls-tampermonkey/raw/master/bypass-paywalls-tampermonkey.user.js
     driver.get(url)
-
 
     for i in range(11):
       try:
@@ -32,10 +34,7 @@ for pageNum in range(0, 10):
     soup = BeautifulSoup(html_text, 'html.parser')
 
     episode_container = soup.find('body').find('div', attrs={'id':'main','class':'container'}).find('div', attrs={'class':'component','data-order':'4'}).find('article-content', attrs={'class':'article-content'}).find('div', attrs={'js-target':'article-content'}).find('div', attrs={'class':'row'}).find('div',attrs={'class':'content-area--full column'}).find('div',attrs={'class':'article article-first-row'}).find('section',attrs={'class':'series-page'}).find('div',attrs={'class':'row'}).find('div',attrs={'class':'series-page__container'}).find('main',attrs={'class':'series-page__main'}).find('div',role="list")
-    print(episode_container)
-    #.find('div',attrs={'role':'list','class':'series-page__podcast-list','aria-label':'Podcasts'})
 
-    #/body/div[1]/div[4]/article-content/div/div/div/div/section/div/div[2]/main/div[2]
     # Find all the episode articles in the container
     episode_articles = episode_container.find_all('div',attrs={'role':'listitem','class':'series-page__podcast-list-item'})
     print(episode_articles)
