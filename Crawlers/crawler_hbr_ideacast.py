@@ -24,37 +24,43 @@ chrome_options.add_argument(f"--load-extension={bypass_paywalls_ext_path}")
 driver = webdriver.Chrome(options=chrome_options)
 driver.get(url)
 
+#year_list_element=WebDriverWait(driver,30).until(EC.presence_of_all_elements_located((By.XPATH,"//a[@class='series-page__filterby-link podcast__p']")))
+year_list_element=driver.find_elements(By.XPATH,"//a[@class='series-page__filterby-link podcast__p']")
+total_episode_articles=[]
+for year_element in year_list_element:
+    #year_switch=WebDriverWait(year_element,20).until(EC.presence_of_all_elements_located((By.XPATH,"//div[@class='slick-track']")))
+    driver.execute_script("arguments[0].click();", year_element)
 
-year_element=WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.XPATH,"//a[@class='slick-track' and text()=' Load more items']")))
 
 
-load_more_element = WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.XPATH,"//a[@href='#' and text()=' Load more items']")))
-while load_more_element:
-  try:
-      load_more_element = WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.XPATH,"//a[@href='#' and text()=' Load more items']")))
-      load_more_element.location_once_scrolled_into_view
-      driver.execute_script("arguments[0].click();", load_more_element)
-  except TimeoutException:
-      print("Time out!")
-      load_more_element=''
+    #load_more_element = WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.XPATH,"//a[@href='#' and text()=' Load more items']")))
+    load_more_element = driver.find_elements(By.XPATH,"//a[@href='#' and text()=' Load more items']")
 
-root_html_text = driver.page_source
-root_soup = BeautifulSoup(root_html_text, 'html.parser')
-episode_container = root_soup.find('body').find('div', attrs={'id': 'main', 'class': 'container'}).find('div', attrs={'class': 'component', 'data-order': '4'}).find('article-content', attrs={'class': 'article-content'}).find('div', attrs={'js-target': 'article-content'}).find('div', attrs={'class': 'row'}).find(
-    'div', attrs={'class': 'content-area--full column'}).find('div', attrs={'class': 'article article-first-row'}).find('section', attrs={'class': 'series-page'}).find('div', attrs={'class': 'row'}).find('div', attrs={'class': 'series-page__container'}).find('main', attrs={'class': 'series-page__main'}).find('div', role="list")
+    while load_more_element:
+      try:
+          load_more_element = WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.XPATH,"//a[@href='#' and text()=' Load more items']")))
+          load_more_element.location_once_scrolled_into_view
+          driver.execute_script("arguments[0].click();", load_more_element)
+      except TimeoutException:
+          print(f"Retrieve eposide list of year {year_element.text} finished!")
+          load_more_element=''
 
-# Find all the episode articles in the container
-episode_articles = episode_container.find_all(
-    'div', attrs={'role': 'listitem', 'class': 'series-page__podcast-list-item'})
-for article in episode_articles:
+    root_html_text = driver.page_source
+    root_soup = BeautifulSoup(root_html_text, 'html.parser')
+    episode_container = root_soup.find('body').find('div', attrs={'id': 'main', 'class': 'container'}).find('div', attrs={'class': 'component', 'data-order': '4'}).find('article-content', attrs={'class': 'article-content'}).find('div', attrs={'js-target': 'article-content'}).find('div', attrs={'class': 'row'}).find(
+        'div', attrs={'class': 'content-area--full column'}).find('div', attrs={'class': 'article article-first-row'}).find('section', attrs={'class': 'series-page'}).find('div', attrs={'class': 'row'}).find('div', attrs={'class': 'series-page__container'}).find('main', attrs={'class': 'series-page__main'}).find('div', role="list")
+
+    # Find all the episode articles in the container
+    episode_articles = episode_container.find_all('div', attrs={'role': 'listitem', 'class': 'series-page__podcast-list-item'})
+    total_episode_articles.extend(episode_articles)
+for article in total_episode_articles:
     # Find the episode audio link
     episode_href = article.find('div', attrs={'class': 'series-page__podcast-info-column'}).find(
         'h3', attrs={'class': 'podcast__h3'}).find('a', attrs={'class': 'podcast-page__link'})['href']
     episode_link = 'https://hbr.org'+episode_href
     episode_index = article.find('div', attrs={'class': 'series-page__podcast-info-column'}).find(
         'p', attrs={'class': 'podcast__p'}).get_text().split()[1]
-    #episode_title = article.find('div', attrs={'class': 'series-page__podcast-info-column'}).find('h3', attrs={
-        'class': 'podcast__h3'}).find('a', attrs={'class': 'podcast-page__link'}).get_text().replace(' ', '-')
+    #episode_title = article.find('div', attrs={'class': 'series-page__podcast-info-column'}).find('h3', attrs={'class': 'podcast__h3'}).find('a', attrs={'class': 'podcast-page__link'}).get_text().replace(' ', '-')
     episode_title=episode_href.split('/')[-1]
     episode_name = episode_index+'-'+episode_title
 
