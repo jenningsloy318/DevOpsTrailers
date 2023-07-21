@@ -72,26 +72,26 @@ for article in total_episode_articles:
     dom = etree.HTML(str(episode_soup))
     audio_link = dom.xpath(
         '/html/body/div[1]/div[4]/article-content/div/section[1]/div/div[2]/div/div/div[2]/div[1]/audio/@src')[0]
-    print(f"downloading audio from {audio_link}")
+
     # Download the audio file
-    audio_response = requests.get(audio_link)
+    print(f"downloading audio from {audio_link}")
     audio_filename = os.path.basename(episode_name+'.mp3')
     audio_filepath = os.path.join('ideacast', audio_filename)
-    with open(audio_filepath, 'wb') as audio_file:
-        audio_file.write(audio_response.content)
+    if not os.path.exists(transcript_filepath):
+        audio_response = requests.get(audio_link)
+        with open(audio_filepath, 'wb') as audio_file:
+            audio_file.write(audio_response.content)
 
     # Download the transcript file
     print(f"downloading transcript")
-    transcript_content = episode_soup.find('body', attrs={'class': 'podcast-episode'}).find('div', attrs={'id': 'main', 'class': 'container'}).find('div', attrs={'class': 'component', 'data-order': '4'}).find('article-content', attrs={'class': 'article-content'}).find('div', attrs={'js-target': 'article-content'}).find('section', attrs={
-        'class': 'podcast-post'}).find('div', attrs={'class': 'row'}).find('div', attrs={'class': 'podcast-post__container'}).find('div', attrs={'class': 'podcast-post__main'}).find('div', attrs={'class': 'podcast-tabs__content'}).find('section', attrs={'id': 'transcript-section', 'class': 'podcast-tabs__section', 'role': 'tabpanel'})
-
-    # print(transcript_content)
     transcript_filename = os.path.basename(episode_name+'.html')
     transcript_filepath = os.path.join('ideacast', transcript_filename)
-
-    with open(transcript_filepath, 'w', encoding='utf-8') as transcript_file:
-        for item in transcript_content.find_all('p'):
-            transcript_file.writelines(str(item)+'\n')
+    if not os.path.exists(transcript_filepath):
+        transcript_content = episode_soup.find('body', attrs={'class': 'podcast-episode'}).find('div', attrs={'id': 'main', 'class': 'container'}).find('div', attrs={'class': 'component', 'data-order': '4'}).find('article-content', attrs={'class': 'article-content'}).find('div', attrs={'js-target': 'article-content'}).find('section', attrs={
+            'class': 'podcast-post'}).find('div', attrs={'class': 'row'}).find('div', attrs={'class': 'podcast-post__container'}).find('div', attrs={'class': 'podcast-post__main'}).find('div', attrs={'class': 'podcast-tabs__content'}).find('section', attrs={'id': 'transcript-section', 'class': 'podcast-tabs__section', 'role': 'tabpanel'})
+        with open(transcript_filepath, 'w', encoding='utf-8') as transcript_file:
+            for item in transcript_content.find_all('p'):
+                transcript_file.writelines(str(item)+'\n')
 
     print(f"Downloaded: {audio_filename} and {transcript_filename}")
     time.sleep(10)

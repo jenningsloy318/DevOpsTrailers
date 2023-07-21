@@ -39,43 +39,44 @@ for pageNum in range(0, 10):
         print(f"Processing episode: {audio_link} and {transcript_link}")
 
         # Download the audio file
-        audio_response = requests.get(audio_link)
         audio_filename = os.path.basename(episode_name+'.mp3')
         audio_filepath = os.path.join('this_american_life', audio_filename)
-        with open(audio_filepath, 'wb') as audio_file:
-            audio_file.write(audio_response.content)
+        if not os.path.exists(audio_filepath):
+            audio_response = requests.get(audio_link)
+            with open(audio_filepath, 'wb') as audio_file:
+                audio_file.write(audio_response.content)
 
         # Download the transcript file
-        transcript_response = requests.get(transcript_link)
-        transcript_soup = BeautifulSoup(transcript_response.text, 'html.parser')
-        iframe = transcript_soup.find_all('iframe',id="odh-popup")
-        for item in iframe:
-            item.decompose()
-        footer=transcript_soup.find_all('footer',id="footer")
-        for item in footer:
-            item.decompose()
-        header=transcript_soup.find_all('header',id="site-header",role="banner")
-        for item in header:
-            item.decompose()
-        player=transcript_soup.find_all('div',id="player")
-        for item in player:
-            item.decompose()
-        meta=transcript_soup.find_all('div',class_="transcript__meta")
-        for item in meta:
-            item.decompose()
-        script=transcript_soup.find_all('script')
-        for item in script:
-            item.decompose()
-        href=transcript_soup.find_all('a')
-        for item in href:
-            del item['href']
-
         #print(transcript_content)
         transcript_filename = os.path.basename(episode_name+'.html')
         transcript_filepath = os.path.join('this_american_life', transcript_filename)
+        if not os.path.exists(audio_filepath):
+            transcript_response = requests.get(transcript_link)
+            transcript_soup = BeautifulSoup(transcript_response.text, 'html.parser')
+            iframe = transcript_soup.find_all('iframe',id="odh-popup")
+            for item in iframe:
+                item.decompose()
+            footer=transcript_soup.find_all('footer',id="footer")
+            for item in footer:
+                item.decompose()
+            header=transcript_soup.find_all('header',id="site-header",role="banner")
+            for item in header:
+                item.decompose()
+            player=transcript_soup.find_all('div',id="player")
+            for item in player:
+                item.decompose()
+            meta=transcript_soup.find_all('div',class_="transcript__meta")
+            for item in meta:
+                item.decompose()
+            script=transcript_soup.find_all('script')
+            for item in script:
+                item.decompose()
+            href=transcript_soup.find_all('a')
+            for item in href:
+                del item['href']
+            with open(transcript_filepath, 'w') as transcript_file:
+                transcript_file.write(transcript_soup.prettify())
 
-        with open(transcript_filepath, 'w') as transcript_file:
-           transcript_file.write(transcript_soup.prettify())
 
         print(f"Downloaded: {audio_filename} and {transcript_filename}")
 
