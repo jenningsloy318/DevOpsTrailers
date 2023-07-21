@@ -59,7 +59,7 @@ for article in total_episode_articles:
         'h3', attrs={'class': 'podcast__h3'}).find('a', attrs={'class': 'podcast-page__link'})['href']
     episode_link = 'https://hbr.org'+episode_href
     episode_index = article.find('div', attrs={'class': 'series-page__podcast-info-column'}).find(
-        'p', attrs={'class': 'podcast__p'}).get_text().split()[1]
+        'p', attrs={'class': 'podcast__p'}).get_text().split()[-1]
     #episode_title = article.find('div', attrs={'class': 'series-page__podcast-info-column'}).find('h3', attrs={'class': 'podcast__h3'}).find('a', attrs={'class': 'podcast-page__link'}).get_text().replace(' ', '-')
     episode_title=episode_href.split('/')[-1]
     episode_name = episode_index+'-'+episode_title
