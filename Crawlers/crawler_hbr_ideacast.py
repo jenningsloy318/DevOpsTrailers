@@ -77,7 +77,7 @@ for article in total_episode_articles:
     print(f"downloading audio from {audio_link}")
     audio_filename = os.path.basename(episode_name+'.mp3')
     audio_filepath = os.path.join('ideacast', audio_filename)
-    if not os.path.exists(transcript_filepath):
+    if not os.path.exists(audio_filepath):
         audio_response = requests.get(audio_link)
         with open(audio_filepath, 'wb') as audio_file:
             audio_file.write(audio_response.content)
@@ -89,11 +89,14 @@ for article in total_episode_articles:
     if not os.path.exists(transcript_filepath):
         transcript_content = episode_soup.find('body', attrs={'class': 'podcast-episode'}).find('div', attrs={'id': 'main', 'class': 'container'}).find('div', attrs={'class': 'component', 'data-order': '4'}).find('article-content', attrs={'class': 'article-content'}).find('div', attrs={'js-target': 'article-content'}).find('section', attrs={
             'class': 'podcast-post'}).find('div', attrs={'class': 'row'}).find('div', attrs={'class': 'podcast-post__container'}).find('div', attrs={'class': 'podcast-post__main'}).find('div', attrs={'class': 'podcast-tabs__content'}).find('section', attrs={'id': 'transcript-section', 'class': 'podcast-tabs__section', 'role': 'tabpanel'})
+        title=episode_soup.find('body', attrs={'class': 'podcast-episode'}).find('div', attrs={'id': 'main', 'class': 'container'}).find('div', attrs={'class': 'component', 'data-order': '4'}).find('article-content', attrs={'class': 'article-content'}).find('div', attrs={'js-target': 'article-content'}).find('section', attrs={
+            'class': 'podcast-post'}).find('div', attrs={'class': 'row'}).find('div', attrs={'class': 'podcast-post__banner-wrapper'}).find('div', attrs={'class': 'podcast-post__banner podcast-post__banner--ideacast'}).find('div', attrs={'class': 'podcast-post__banner-info'}).find('h1', attrs={ 'class': 'podcast-post__banner-title podcast__h2'})
         with open(transcript_filepath, 'w', encoding='utf-8') as transcript_file:
+            transcript_file.writelines(str(title)+'\n\n')
             for item in transcript_content.find_all('p'):
                 transcript_file.writelines(str(item)+'\n')
 
     print(f"Downloaded: {audio_filename} and {transcript_filename}")
-    time.sleep(10)
+    time.sleep(5)
 
 print("Scraping completed.")
