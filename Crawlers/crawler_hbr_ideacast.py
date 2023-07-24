@@ -83,7 +83,7 @@ for article in total_episode_articles:
             audio_file.write(audio_response.content)
 
     # Download the transcript file
-    print(f"downloading transcript")
+    print(f"downloading transcript from {episode_link}")
     transcript_filename = os.path.basename(episode_name+'.html')
     transcript_filepath = os.path.join('ideacast', transcript_filename)
     if not os.path.exists(transcript_filepath):
