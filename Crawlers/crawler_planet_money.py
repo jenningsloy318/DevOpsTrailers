@@ -21,7 +21,6 @@ chrome_options.add_argument('--always-authorize-plugins=true')
 chrome_options.add_argument('--disable-blink-features=AutomationControlled')
 chrome_options.add_argument('--disable-blink-features')
 chrome_options.add_argument('--user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"')
-
 # Create a folder to save the audio and transcript files
 bypass_paywalls_ext_path = "/Users/I336589/development/osc-projects/bypass-paywalls-chrome"
 # https://github.com/iamadamdev/bypass-paywalls-chrome
@@ -31,36 +30,40 @@ driver = webdriver.Chrome(options=chrome_options)
 
 driver.get(url)
 
+#content = driver.execute_script("return document.getElementsByTagName('html').innerHTML")
+#
+#https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByTagName
+
 #dom = driver.find_element(By.XPATH,"//button[@class='options__load-more' and text()='Load more episodes']").get_attribute('innerHTML')
-
 #load_more_element = driver.find_element(By.XPATH,"//button[@class='options__load-more' and text()='Load more episodes']")
-#print(load_more_element)
-#load_more_element.click()
-i=1
-while i<3:
-    try:
-          load_more_element = WebDriverWait(driver,30).until(EC.element_to_be_clickable((By.XPATH,"//button[@class='options__load-more' and text()='Load more episodes']")))
-          #load_more_element.location_once_scrolled_into_view
-          driver.execute_script("arguments[0].scrollIntoView();", load_more_element)
-          driver.execute_script("arguments[0].click();", load_more_element)
-          WebDriverWait(driver, 100).until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
-          i+=1
-    except TimeoutException:
-          print(f"Retrieve eposide list finished!")
-          load_more_element=''
+#https://www.selenium.dev/documentation/webdriver/elements/finders/
+
+# elementHTML = WebElement.get_attribute('outerHTML')
+# elementSoup = BeautifulSoup(elementHTML,'html.parser')
+
+for i in range(10):
+  load_more_element = WebDriverWait(driver,30).until(EC.element_to_be_clickable((By.XPATH,"//button[@class='options__load-more' and text()='Load more episodes']")))
+  #load_more_element.location_once_scrolled_into_view
+  #https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+  driver.execute_script("arguments[0].scrollIntoView();", load_more_element)
+  driver.execute_script("arguments[0].click();", load_more_element)
+  #https://developer.mozilla.org/en-US/docs/Web/API/Document/readyState
+  time.sleep(5)
+  root_content = driver.execute_script("return document.getElementsByClassName('podcast-section episode-list episode-list-infinite')[0]")
 
 
-root_html_text = driver.page_source
-root_soup = BeautifulSoup(root_html_text, 'html.parser')
-episode_container = root_soup.find('body').find('main', attrs={'aria-label': 'main content'}).find('div', attrs={'id': 'wrapper'}).find('section', attrs={'id': 'main-section'}).find('section', attrs={'class': 'podcast-section episode-list'})
-    # Find all the episode articles in the container
-episode_articles = episode_container.find_all('article', attrs={'class': 'item podcast-episode'})
+#root_html_text = driver.page_source
+#root_soup = BeautifulSoup(root_html_text, 'html.parser')
+#root_content = driver.execute_script("return document.getElementsByClassName('podcast-section episode-list episode-list-infinite')[0]")
+root_soup = BeautifulSoup(root_content.get_attribute('outerHTML'), 'html.parser')
+# Find all the episode articles in the container
+episode_articles = root_soup.find_all('article', attrs={'class': 'item podcast-episode'})
 print(len(episode_articles))
 #print(f"all articales {episode_articles}")
 for article in episode_articles:
     # Find the episode audio link
     episode_link = article.find('div', attrs={'class': 'item-info'}).find('h2', attrs={'class': 'title'}).find('a')['href']
-    episode_title = article.find('div', attrs={'class': 'item-info'}).find('h2', attrs={'class': 'title'}).find('a').get_text().replace(' ','-')
+    episode_title = article.find('div', attrs={'class': 'item-info'}).find('h2', attrs={'class': 'title'}).find('a').get_text().replace(',','').replace('?','').replace(' ','-')
     episode_index = article.find('div', attrs={'class': 'item-info'}).find('h3', attrs={'class': 'episode-date'}).find('time')['datetime']
     episode_name = episode_index+'-'+episode_title
 
@@ -70,22 +73,23 @@ for article in episode_articles:
     episode_response_html_text = driver.page_source
     episode_soup = BeautifulSoup(episode_response_html_text, 'html.parser')
 
-    audio_link = episode_soup.find('body').find('main',attrs={'aria-label': 'main content'}).find('div',attrs={'id': 'wrapper'}).find('section',attrs={'id': 'main-section'}).find('article',attrs={'class': 'story'}).find('div',attrs={'id':'primaryaudio','class':'storylocation linkLocation'}).find('article',attrs={'class':'bucketwrap resaudio primaryaudio','aria-label':'audio-module'}).find('div',attrs={'class': 'audio-module'}).find('div',attrs={'class': 'audio-module-tools'}).find('ul',attrs={'class': 'audio-module-more-tools'}).find('li',attrs={'class': 'audio-tool audio-tool-download'}).find('a')['href']
+    if episode_soup.find_all('li',attrs={'class':'audio-tool audio-tool-download'}):
+        audio_link = episode_soup.find_all('li',attrs={'class':'audio-tool audio-tool-download'})[0].find('a')['href']
 
-    # Download the audio file
-    print(f"downloading audio from {audio_link}")
-    audio_filename = os.path.basename(episode_name+'.mp3')
-    audio_filepath = os.path.join('planet_money', audio_filename)
-    if not os.path.exists(audio_filepath):
-        audio_response = requests.get(audio_link)
-        with open(audio_filepath, 'wb') as audio_file:
-            audio_file.write(audio_response.content)
-        print(f"Downloaded: {audio_filename}")
+        # Download the audio file
+        print(f"downloading audio from {audio_link}")
+        audio_filename = os.path.basename(episode_name+'.mp3')
+        audio_filepath = os.path.join('planet_money', audio_filename)
+        if not os.path.exists(audio_filepath):
+            audio_response = requests.get(audio_link)
+            with open(audio_filepath, 'wb') as audio_file:
+                audio_file.write(audio_response.content)
+            print(f"Downloaded: {audio_filename}")
 
     # Download the transcript file
     #
-    if "no-transcript" not in episode_soup.find('body')['class']:
-        transcript_link = article.find('div', attrs={'class': 'item-info'}).find('article',attrs={'class': 'bucketwrap resaudio','aria-label':'audio-module'}).find('div',attrs={'class': 'audio-module'}).find('div',attrs={'class': 'audio-module-tools'}).find('ul',attrs={'class': 'audio-module-more-tools'}).find('li',attrs={'class': 'audio-tool audio-tool-transcript'}).find('a')['href']
+    if article.find_all('li',attrs={'class': 'audio-tool audio-tool-transcript'}):
+        transcript_link = article.find_all('li',attrs={'class': 'audio-tool audio-tool-transcript'})[0].find('a')['href']
         print(f"downloading transcript {transcript_link}")
         transcript_filename = os.path.basename(episode_name+'.html')
         transcript_filepath = os.path.join('planet_money', transcript_filename)
