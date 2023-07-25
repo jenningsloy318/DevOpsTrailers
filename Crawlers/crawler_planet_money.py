@@ -20,6 +20,7 @@ chrome_options.add_argument("--enable-javascript")
 chrome_options.add_argument('--always-authorize-plugins=true')
 chrome_options.add_argument('--disable-blink-features=AutomationControlled')
 chrome_options.add_argument('--disable-blink-features')
+chrome_options.add_argument('--user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"')
 
 # Create a folder to save the audio and transcript files
 bypass_paywalls_ext_path = "/Users/I336589/development/osc-projects/bypass-paywalls-chrome"
