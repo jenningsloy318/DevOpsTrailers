@@ -81,6 +81,8 @@ for article in total_episode_articles:
         audio_response = requests.get(audio_link)
         with open(audio_filepath, 'wb') as audio_file:
             audio_file.write(audio_response.content)
+    else:
+        print(f"{audio_filepath} already exists, skipped")
 
     # Download the transcript file
     print(f"downloading transcript from {episode_link}")
@@ -95,6 +97,8 @@ for article in total_episode_articles:
             transcript_file.writelines(str(title)+'\n\n')
             for item in transcript_content.find_all('p'):
                 transcript_file.writelines(str(item)+'\n')
+    else:
+       print(f"{transcript_filepath} already exists, skipped")
 
     print(f"Downloaded: {audio_filename} and {transcript_filename}")
     time.sleep(5)

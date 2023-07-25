@@ -85,7 +85,8 @@ for article in episode_articles:
             with open(audio_filepath, 'wb') as audio_file:
                 audio_file.write(audio_response.content)
             print(f"Downloaded: {audio_filename}")
-
+        else:
+          print(f"{audio_filepath} already exists, skipped")
     # Download the transcript file
     #
     if article.find_all('li',attrs={'class': 'audio-tool audio-tool-transcript'}):
@@ -145,6 +146,8 @@ for article in episode_articles:
                   transcript_file.write(transcript_soup.prettify())
 
         print(f"Downloaded: {transcript_filename}")
+        else:
+          print(f"{transcript_filepath} already exists, skipped")
     time.sleep(5)
 
 print("Scraping completed.")

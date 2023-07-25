@@ -49,6 +49,9 @@ for pageNum in range(0, 10):
                 with open(audio_filepath, 'wb') as audio_file:
                     audio_file.write(audio_response.content)
 
+            else:
+              print(f"{audio_filepath} already exists, skipped")
+
             # Download the transcript file
             #print(transcript_content)
             transcript_filename = os.path.basename(episode_name+'.html')
@@ -81,6 +84,8 @@ for pageNum in range(0, 10):
                     transcript_file.write(transcript_soup.prettify())
 
 
+            else:
+              print(f"{transcript_filepath} already exists, skipped")
             print(f"Downloaded: {audio_filename} and {transcript_filename}")
 
 print("Scraping completed.")

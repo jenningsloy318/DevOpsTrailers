@@ -36,3 +36,5 @@ if  root_soup.find_all('ul',attrs={'class':'no-style episodes-list mt-2'}):
           with open(audio_filepath, 'wb') as audio_file:
               audio_file.write(audio_response.content)
               print(f"Downloaded: {audio_filename}")
+      else:
+        print(f"{audio_filename} already exists, skipped")
