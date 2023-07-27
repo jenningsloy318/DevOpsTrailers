@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 # URL of the archive page
+# #https://aliabdaal.com/podcast/
 url = 'https://up.audio/podcasts/itunes1587142091'
 os.makedirs('Deep_Dive_with_Ali_Abdaal', exist_ok=True)
 requests.adapters.DEFAULT_RETRIES = 10
