@@ -166,6 +166,13 @@ Shell Commands and Tips
 
   > since postprocess will invoke ffmpeg, I recompiled ffmpeg with nvidia hardware accelerate enabaled.
   >
+
+  - get transcript from youtuebe website
+  - open a youtube video on browser
+  - presee **F12** to open dev tool
+  - switch to console tab
+  - at the bottom of the window, after `>`, input `document.getElementsByTagName('ytd-app')[0].data.playerResponse`, then enter.
+  - you will find the transcript at `captions.playerCaptionsTracklistRenderer.captionTracks[0].baseUrl`, open the url in a new tab, you will see the transcript in xml format.
 6. compile ffmpeg with nvidia hardware accelerate support
    - install ffnvcodec
 
@@ -230,4 +237,3 @@ Shell Commands and Tips
     ls -l "$file"
   done
   ```
-
