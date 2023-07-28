@@ -9,7 +9,7 @@ from lxml import html
 import time
 for n in range(1,10):
     url = f'https://hiddenbrain.org/category/podcast/page/{n}/'
-    response = requests.get(url,timeout=10,allow_redirects=True)
+    response = requests.get(url,allow_redirects=True)
     soup = bs4.BeautifulSoup(response.text, 'html.parser')
     articales= soup.find_all('article',attrs={'itemscope':'itemscope',})
     os.makedirs('hidden_brain',exist_ok=True)
@@ -17,8 +17,7 @@ for n in range(1,10):
         episode_link = arti.find('a', attrs={'rel':'bookmark'})['href']
         print(f'starting process episode {episode_link}')
         episode_title=episode_link.split('/')[-2]
-        print(episode_title)
-        episode_response=requests.get(episode_link,timeout=10)
+        episode_response=requests.get(episode_link)
         episode_soup= bs4.BeautifulSoup(episode_response.text,'html.parser')
         #dom = etree.HTML(str(episode_soup))
         dom = html.fromstring(episode_response.content)
@@ -26,10 +25,10 @@ for n in range(1,10):
         audio_file_path=f'hidden_brain/{episode_title}.mp3'
         if not os.path.exists(audio_file_path):
             with open(audio_file_path, 'wb') as audio_file:
-                audio_response = requests.get(audio_link)
+                audio_response = requests.get(audio_link,stream=True)
                 audio_file.write(audio_response.content)
         else:
-            print(f'hidden_brain/{episode_title}.mp3 already exists')
+            print(f'{audio_file_path} already exists')
         if episode_soup.find('div',attrs={'id':'ub-content-toggle-panel-0-transcript','role':'region'}):
             transcript_file_path=f'hidden_brain/{episode_title}.txt'
             transcript_content=episode_soup.find('div',attrs={'id':'ub-content-toggle-panel-0-transcript','role':'region'})
@@ -40,5 +39,5 @@ for n in range(1,10):
                     html_file.write(transcript_title)
                     html_file.write(str(transcript_content.get_text(separator='\n\n',strip=False)))
             else:
-                print(f'hidden_brain/{episode_title}.html already exists')
+                print(f'{transcript_file_path} already exists')
             time.sleep(10)

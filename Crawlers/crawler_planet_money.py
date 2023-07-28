@@ -49,15 +49,18 @@ for i in range(10):
   driver.execute_script("arguments[0].click();", load_more_element)
   #https://developer.mozilla.org/en-US/docs/Web/API/Document/readyState
   time.sleep(5)
+  root_content0= driver.execute_script("return document.getElementsByClassName('podcast-section episode-list')[0]")
   root_content = driver.execute_script("return document.getElementsByClassName('podcast-section episode-list episode-list-infinite')[0]")
 
 
 #root_html_text = driver.page_source
 #root_soup = BeautifulSoup(root_html_text, 'html.parser')
 #root_content = driver.execute_script("return document.getElementsByClassName('podcast-section episode-list episode-list-infinite')[0]")
+root_soup0 = BeautifulSoup(root_content.get_attribute('outerHTML'), 'html.parser')
 root_soup = BeautifulSoup(root_content.get_attribute('outerHTML'), 'html.parser')
 # Find all the episode articles in the container
-episode_articles = root_soup.find_all('article', attrs={'class': 'item podcast-episode'})
+episode_articles = root_soup0.find_all('article', attrs={'class': 'item podcast-episode'})
+episode_articles.extend(root_soup.find_all('article', attrs={'class': 'item podcast-episode'}))
 print(len(episode_articles))
 #print(f"all articales {episode_articles}")
 for article in episode_articles:
@@ -143,11 +146,11 @@ for article in episode_articles:
               del a['href']
 
           with open(transcript_filepath, 'w') as transcript_file:
-                  transcript_file.write(transcript_soup.prettify())
+                transcript_file.write(transcript_soup.prettify())
 
-        print(f"Downloaded: {transcript_filename}")
+                print(f"Downloaded: {transcript_filename}")
         else:
-          print(f"{transcript_filepath} already exists, skipped")
+            print(f"{transcript_filepath} already exists, skipped")
     time.sleep(5)
 
 print("Scraping completed.")
