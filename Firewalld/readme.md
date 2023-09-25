@@ -13,7 +13,7 @@ firewall-cmd --permanent --add-service=jenkins
 firewall-cmd --zone=public --add-service=http --permanent
 ```
 
-3. add a port directly 
+3. add a port directly
 
 ```
 firewall-cmd --zone=public --add-port=9093/tcp --permanent
@@ -30,19 +30,20 @@ firewall-cmd --reload
 
 5. configure Centos as a router
 ```
-firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o ens224u2 -j MASQUERADE -s 192.168.2.0/24 
-firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o ens224u2 -j MASQUERADE -s 192.168.1.0/24 
-firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o ens224u2 -j MASQUERADE -s 10.36.0.0/16 
+firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o ens224u2 -j MASQUERADE -s 192.168.2.0/24
+firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o ens224u2 -j MASQUERADE -s 192.168.1.0/24
+firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o ens224u2 -j MASQUERADE -s 10.36.0.0/16
 
 firewall-cmd --change-interface=ens224u2 --zone=external --permanent
 
-firewall-cmd --set-default-zone=internal 
+firewall-cmd --set-default-zone=internal
 
 firewall-cmd --complete-reload
 ```
 
 
-6. add forward port 
+6. add forward port
+
 ```
 firewall-cmd  --add-masquerade --permanent
 firewall-cmd --permanent --add-forward-port=port=41443:proto=tcp:toaddr=10.36.51.141:toport=443
@@ -77,3 +78,9 @@ firewall-cmd --add-port={41443/tcp,42443/tcp,11443/tcp} --permanent
     ```
     nft add rule inet filter output socket cgroupv2 level 2 "system.slice/nginx.service" drop
     ```
+
+8. rich rules
+
+```
+firewall-cmd --permanent  --add-rich-rule='rule family="ipv4" source address="10.0.0.0/24" port protocol="tcp" port="38080" accept'
+```
