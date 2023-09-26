@@ -18,9 +18,10 @@ chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--enable-javascript")
 chrome_options.add_argument('--always-authorize-plugins=true')
 # Create a folder to save the audio and transcript files
-bypass_paywalls_ext_path = "/Users/I336589/development/osc-projects/bypass-paywalls-chrome"
+bypass_paywalls_ext_path = "./bypass-paywalls-chrome"
 # https://github.com/iamadamdev/bypass-paywalls-chrome
 chrome_options.add_argument(f"--load-extension={bypass_paywalls_ext_path}")
+#chrome_options.binary_location = '/usr/bin/google-chrome'
 driver = webdriver.Chrome(options=chrome_options)
 driver.get(url)
 
@@ -77,7 +78,7 @@ for article in total_episode_articles:
     print(f"downloading audio from {audio_link}")
     audio_filename = os.path.basename(episode_name+'.mp3')
     audio_filepath = os.path.join('ideacast', audio_filename)
-    if not os.path.exists(audio_filepath):
+    if not os.path.exists(audio_filepath) or os.path.getsize(audio_filepath) == 0:
         audio_response = requests.get(audio_link)
         with open(audio_filepath, 'wb') as audio_file:
             audio_file.write(audio_response.content)
@@ -88,7 +89,7 @@ for article in total_episode_articles:
     print(f"downloading transcript from {episode_link}")
     transcript_filename = os.path.basename(episode_name+'.html')
     transcript_filepath = os.path.join('ideacast', transcript_filename)
-    if not os.path.exists(transcript_filepath):
+    if not os.path.exists(transcript_filepath) or os.path.getsize(transcript_file_path) == 0:
         transcript_content = episode_soup.find('body', attrs={'class': 'podcast-episode'}).find('div', attrs={'id': 'main', 'class': 'container'}).find('div', attrs={'class': 'component', 'data-order': '4'}).find('article-content', attrs={'class': 'article-content'}).find('div', attrs={'js-target': 'article-content'}).find('section', attrs={
             'class': 'podcast-post'}).find('div', attrs={'class': 'row'}).find('div', attrs={'class': 'podcast-post__container'}).find('div', attrs={'class': 'podcast-post__main'}).find('div', attrs={'class': 'podcast-tabs__content'}).find('section', attrs={'id': 'transcript-section', 'class': 'podcast-tabs__section', 'role': 'tabpanel'})
         title=episode_soup.find('body', attrs={'class': 'podcast-episode'}).find('div', attrs={'id': 'main', 'class': 'container'}).find('div', attrs={'class': 'component', 'data-order': '4'}).find('article-content', attrs={'class': 'article-content'}).find('div', attrs={'js-target': 'article-content'}).find('section', attrs={

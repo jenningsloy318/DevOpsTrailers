@@ -23,7 +23,7 @@ for n in range(1,10):
         dom = html.fromstring(episode_response.content)
         audio_link = dom.xpath('/html/body/div[2]/div/div/div[1]/main/article/div/div/figure/audio[last()]/@src')[0]
         audio_file_path=f'hidden_brain/{episode_title}.mp3'
-        if not os.path.exists(audio_file_path):
+        if not os.path.exists(audio_file_path) or os.path.getsize(audio_file_path) == 0 :
             with requests.get(audio_link,stream=True) as r:
                 r.raise_for_status()
                 with open(audio_file_path, 'wb') as audio_file:
@@ -37,7 +37,7 @@ for n in range(1,10):
             transcript_content=episode_soup.find('div',attrs={'id':'ub-content-toggle-panel-0-transcript','role':'region'})
             transcript_title=episode_soup.find('h1',attrs={'class':'entry-title','itemprop':'headline'}).get_text()
             #transcript_content=dom.xpath('/html/body/div[2]/div/div/div[1]/main/article/div/div/div[1]/div/div[2]')[0]
-            if not os.path.exists(transcript_file_path):
+            if not os.path.exists(transcript_file_path) or os.path.getsize(transcript_file_path) == 0:
                 with  open(transcript_file_path,'w') as html_file:
                     html_file.write(transcript_title)
                     html_file.write(str(transcript_content.get_text(separator='\n\n',strip=False)))

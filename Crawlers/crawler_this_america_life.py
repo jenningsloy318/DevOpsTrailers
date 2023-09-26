@@ -44,7 +44,7 @@ for pageNum in range(0, 10):
             # Download the audio file
             audio_filename = os.path.basename(episode_name+'.mp3')
             audio_filepath = os.path.join('this_american_life', audio_filename)
-            if not os.path.exists(audio_filepath):
+            if not os.path.exists(audio_filepath) or os.path.getsize(audio_filepath):
                 audio_response = requests.get(audio_link)
                 with open(audio_filepath, 'wb') as audio_file:
                     audio_file.write(audio_response.content)
@@ -56,7 +56,7 @@ for pageNum in range(0, 10):
             #print(transcript_content)
             transcript_filename = os.path.basename(episode_name+'.html')
             transcript_filepath = os.path.join('this_american_life', transcript_filename)
-            if not os.path.exists(transcript_filepath):
+            if not os.path.exists(transcript_filepath) or os.path.getsize(transcript_filepath):
                 transcript_response = requests.get(transcript_link)
                 transcript_soup = BeautifulSoup(transcript_response.text, 'html.parser')
                 iframe = transcript_soup.find_all('iframe',id="odh-popup")

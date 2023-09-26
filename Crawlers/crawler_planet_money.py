@@ -21,6 +21,7 @@ chrome_options.add_argument('--always-authorize-plugins=true')
 chrome_options.add_argument('--disable-blink-features=AutomationControlled')
 chrome_options.add_argument('--disable-blink-features')
 chrome_options.add_argument('--user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"')
+chrome_options.binary_location='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 # Create a folder to save the audio and transcript files
 bypass_paywalls_ext_path = "/Users/I336589/development/osc-projects/bypass-paywalls-chrome"
 # https://github.com/iamadamdev/bypass-paywalls-chrome
@@ -60,7 +61,7 @@ root_soup0 = BeautifulSoup(root_content.get_attribute('outerHTML'), 'html.parser
 root_soup = BeautifulSoup(root_content.get_attribute('outerHTML'), 'html.parser')
 # Find all the episode articles in the container
 episode_articles = root_soup0.find_all('article', attrs={'class': 'item podcast-episode'})
-episode_articles.extend(root_soup.find_all('article', attrs={'class': 'item podcast-episode'}))
+#episode_articles.extend(root_soup.find_all('article', attrs={'class': 'item podcast-episode'}))
 print(len(episode_articles))
 #print(f"all articales {episode_articles}")
 for article in episode_articles:
@@ -83,7 +84,7 @@ for article in episode_articles:
         print(f"downloading audio from {audio_link}")
         audio_filename = os.path.basename(episode_name+'.mp3')
         audio_filepath = os.path.join('planet_money', audio_filename)
-        if not os.path.exists(audio_filepath):
+        if not os.path.exists(audio_filepath)  or os.path.getsize(audio_filepath) == 0:
             audio_response = requests.get(audio_link)
             with open(audio_filepath, 'wb') as audio_file:
                 audio_file.write(audio_response.content)
@@ -97,7 +98,7 @@ for article in episode_articles:
         print(f"downloading transcript {transcript_link}")
         transcript_filename = os.path.basename(episode_name+'.html')
         transcript_filepath = os.path.join('planet_money', transcript_filename)
-        if not os.path.exists(transcript_filepath):
+        if not os.path.exists(transcript_filepath) or os.path.getsize(transcript_filepath) == 0:
           transcript_response = requests.get(transcript_link)
           transcript_soup = BeautifulSoup(transcript_response.text, 'html.parser')
           iframe = transcript_soup.find_all('footer')
