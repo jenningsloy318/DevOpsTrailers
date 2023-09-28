@@ -114,7 +114,7 @@ root@websvc:~# nft add rule inet filter input ip saddr 182.148.71.3 tcp dport 64
 
 ```shell
 root@websvc:~# nft add counter inet filter ssh-counter {comment "counter ssh connection"}
-root@websvc:~# nft add rule inet filter input tcp dport 2017 meter ssh-conn-meter { ip saddr & 255.255.255.0 ct count 5 } counter name ssh-counter accept
+root@websvc:~# nft add rule inet filter input ct state new tcp dport 2017 meter ssh-conn-meter { ip saddr & 255.255.255.0 ct count 5 } counter name ssh-counter accept
 root@websvc:~# nft list counter inet filter ssh-counter
 table inet filter {
 	counter ssh-counter {
@@ -139,8 +139,8 @@ table inet filter {
 
 ```shell
 root@websvc:~# nft add table nat
-root@websvc:~# nft add chain nat prerouting '{ type nat hook prerouting priority -100 ; policy drop;}'
-root@websvc:~# nft add chain nat postrouting '{ type nat hook postrouting priority 100 ; policy drop;}'
+root@websvc:~# nft add chain nat prerouting '{ type nat hook prerouting priority -100 ; policy accept;}'
+root@websvc:~# nft add chain nat postrouting '{ type nat hook postrouting priority 100 ; policy accept;}'
 ```
 
 * configure SNAT
