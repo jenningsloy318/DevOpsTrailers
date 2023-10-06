@@ -149,5 +149,6 @@ root@websvc:~# nft add chain nat postrouting '{ type nat hook postrouting priori
 root@websvc:~# nft add rule nat postrouting ip saddr 10.0.0.0/24 snat to 92.118.228.104
 root@websvc:~# nft add rule nat postrouting tcp dport 6443 snat to 92.118.228.104
 root@websvc:~# nft add rule nat postrouting udp dport 6443 snat to 92.118.228.104
+root@websvc:~# nft add rule nat postrouting oifname "eth0" masquerade
 
 ```
