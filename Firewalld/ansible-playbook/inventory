@@ -1,0 +1,2 @@
+[web]
+xx.xx.xx.xx ansible_user=user ansible_port=22

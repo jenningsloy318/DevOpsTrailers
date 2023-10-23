@@ -1,0 +1,26 @@
+- name: update nftables
+  hosts: web
+  tasks:
+  - name: get last IP address in /etc/nftables.conf
+    shell: grep "ip saddr" /etc/nftables.conf | grep "6443"| awk '{print $3}'| uniq
+    register: lastIP
+  - debug:  msg="Last IP address is {{ lastIP.stdout }}"
+  - name: get current IP address
+    shell: env|grep SSH_CLIENT|awk '{print $1}'| awk -F "=" '{print $2}'
+    register: newIP
+  - debug:  msg="New IP address is {{ newIP.stdout }}"
+  - name: update nftables.config
+    become: yes
+    become_method: sudo
+    become_user: root
+    shell: sed -i "s/{{ lastIP.stdout }}/{{  newIP.stdout }}/g" /etc/nftables.conf
+    notify:
+      - Restart-Nftables
+  handlers:
+  - name: Restart-Nftables
+    become: yes
+    become_method: sudo
+    become_user: root
+    ansible.builtin.service:
+      name: nftables
+      state: restarted
