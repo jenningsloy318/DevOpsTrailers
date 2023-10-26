@@ -1,0 +1,13 @@
+{
+    "required_pull_request_reviews": {
+        "bypass_pull_request_allowances": {
+            "users": [ "service-tip-git" ]
+        },
+        "required_approving_review_count": 1
+    },
+    "required_status_checks": {
+        "strict": true
+    },
+    "restrictions": { "users": [ ], "teams": [ ], "apps": [ ] },
+    "enforce_admins": null
+}

@@ -1,0 +1,6 @@
+{
+    "requestType": "deleteProject",
+    "userKey": "user key",
+    "productToken": "productToken",
+    "projectToken": "projectToken"
+}

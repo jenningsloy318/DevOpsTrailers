@@ -1,0 +1,5 @@
+{
+    "requestType": "getAllProjects",
+    "userKey": "user key",
+    "productToken": "product key"
+}

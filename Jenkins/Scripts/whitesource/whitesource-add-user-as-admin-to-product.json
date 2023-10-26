@@ -1,0 +1,12 @@
+{
+    "requestType": "setProductAssignments",
+    "userKey": "user_key",
+    "productToken": "product_token",
+    "productAdmins":
+    {
+        "userAssignments": [
+            { "email": "user-email1" },
+            { "email": "user-email2" }
+        ]
+    }
+}
