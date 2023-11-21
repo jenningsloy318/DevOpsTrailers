@@ -84,3 +84,11 @@
     rm -f /boot/vmlinuz-0-rescue-* /boot/initramfs-0-rescue-*.img
     /usr/lib/kernel/install.d/51-dracut-rescue.install add $(uname -r) "" /lib/modules/$(uname -r)/vmlinuz
     ```
+7 crawl the whole website
+
+```shell
+wget --random-wait -r -p -e robots=off -U mozilla Website_URL ​​​
+
+-nv 或 --no-verbose: less verbose；
+--accept-regex: you can filter the url with regex expression
+```
