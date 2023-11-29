@@ -92,3 +92,8 @@ wget --random-wait -r -p -e robots=off -U mozilla Website_URL ​​​
 -nv 或 --no-verbose: less verbose；
 --accept-regex: you can filter the url with regex expression
 ```
+
+7. arxiv paper reading
+
+   as papers in arxiv.org is pdf, not friendly for reading, we can replace the `x` with `5` in the url to get html version, for example
+   `https://arxiv.org/abs/2110.07602` to `https://ar5iv.org/abs/2110.07602`
