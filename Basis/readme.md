@@ -97,3 +97,6 @@ wget --random-wait -r -p -e robots=off -U mozilla Website_URL ​​​
 
    as papers in arxiv.org is pdf, not friendly for reading, we can replace the `x` with `5` in the url to get html version, for example
    `https://arxiv.org/abs/2110.07602` to `https://ar5iv.org/abs/2110.07602`
+
+   replace `v` with `w` will get `AI Chat pdf`
+    `https://arxiw.org/abs/2110.07602`
