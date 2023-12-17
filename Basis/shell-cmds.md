@@ -29,7 +29,6 @@ Shell Commands and Tips
     "Michael"
     ```
 
-
 - extract muliple fields as new json/dict
 
     ```shell
@@ -173,6 +172,7 @@ Shell Commands and Tips
   - switch to console tab
   - at the bottom of the window, after `>`, input `document.getElementsByTagName('ytd-app')[0].data.playerResponse`, then enter.
   - you will find the transcript at `captions.playerCaptionsTracklistRenderer.captionTracks[0].baseUrl`, open the url in a new tab, you will see the transcript in xml format.
+
 6. compile ffmpeg with nvidia hardware accelerate support
    - install ffnvcodec
 
@@ -198,13 +198,16 @@ Shell Commands and Tips
   ffmpeg -hwaccel cuda   -i input-video.webm -i input-audio.webm  -c:v h264_nvenc -c:a libmp3lame output.mp4
   ```
 
-- use ffmpeg to embed subtitles
+- use ffmpeg to embed subtitles and audio
 
   ```sh
-  ffmpeg -y -loglevel repeat+info -i file:input.mp4 -i file:input.en.vtt -map 0 -dn -ignore_unknown -c copy -c:s mov_text -map -0:s -map 1:0 -metadata:s:s:0 language=eng -metadata:s:s:0 handler_name=English -metadata:s:s:0 title=English -movflags +faststart file:output.mp4
+    ffmpeg -i video.mp4 -i audio.m4a  -i subtitles.srt -c:v copy -c:a copy  -c:s mov_text output.mp4
   ```
 
-7. mpv with hardware acceleration, modify or create `/.config/mpv/mpv.conf`
+  - `-c:v copy` and  `-c:a copy`: keep encoder same as original for  audio and video, multiple audio files, we use `-c:a:0 copy` for the first audio, `-c:a:1 copy` for the second audio
+  - `-c:s mov_text`: set the subtitle encoder to mov_text, if have multiple subtitles, use `-metadata:s:s:0 language=eng`: set first subtitile language as eng and `-metadata:s:s:1 language=chn`: set second subtitile language as chn
+
+1. mpv with hardware acceleration, modify or create `/.config/mpv/mpv.conf`
 
     ```
     vo=gpu
@@ -218,7 +221,7 @@ Shell Commands and Tips
     hwdec=nvdec-copy
     ```
 
-8. for loop to deal with files with spaces in names in
+2. for loop to deal with files with spaces in names in
 
 - in zsh
 
