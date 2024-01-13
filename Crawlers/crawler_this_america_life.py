@@ -33,7 +33,7 @@ for pageNum in range(0, 10):
         if episode_soup.find_all('header',attrs={'class':'episode-header'}):
             article_links = episode_soup.find_all('header',attrs={'class':'episode-header'})[0].find('div',attrs={'class':'container clearfix'}).find('ul',attrs={'class':'actions'}).find_all('li')
             for link in article_links:
-                if not link.get('class'):
+                if link.find_all('a', attrs={'class': 'links-processed internal'}):
                     transcript_link="https://www.thisamericanlife.org"+link.a['href']
                 elif link.get('class') == ['download'] and link.a is not None:
                     audio_link=link.a['href']
