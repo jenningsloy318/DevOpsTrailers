@@ -33,7 +33,7 @@ for pageNum in range(0, 10):
         if episode_soup.find_all('header',attrs={'class':'episode-header'}):
             article_links = episode_soup.find_all('header',attrs={'class':'episode-header'})[0].find('div',attrs={'class':'container clearfix'}).find('ul',attrs={'class':'actions'}).find_all('li')
             for link in article_links:
-                if link.find_all('a', attrs={'class': 'links-processed internal'}):
+                if link.find_all('span', attrs={'class': 'icon icon-transcript', }):
                     transcript_link="https://www.thisamericanlife.org"+link.a['href']
                 elif link.get('class') == ['download'] and link.a is not None:
                     audio_link=link.a['href']
@@ -42,7 +42,7 @@ for pageNum in range(0, 10):
 
             # Download the audio file
             if 'audio_link' in locals() and 'transcript_link' in locals():
-                print(f"Processing episode: {audio_link} ")
+                print(f"Processing audio: {audio_link} ")
                 audio_filename = os.path.basename(episode_name + '.mp3')
                 audio_filepath = os.path.join('this_american_life', audio_filename)
                 if not os.path.exists(audio_filepath) or os.path.getsize(audio_filepath):
@@ -55,7 +55,7 @@ for pageNum in range(0, 10):
 
             # Download the transcript file
             #print(transcript_content)
-                print(f"Processing episode: {transcript_link} ")
+                print(f"Processing transript: {transcript_link} ")
                 transcript_filename = os.path.basename(episode_name + '.html')
                 transcript_filepath = os.path.join('this_american_life', transcript_filename)
                 if not os.path.exists(transcript_filepath) or os.path.getsize(transcript_filepath):
