@@ -35,57 +35,58 @@ for pageNum in range(0, 10):
             for link in article_links:
                 if not link.get('class'):
                     transcript_link="https://www.thisamericanlife.org"+link.a['href']
-                elif link.get('class')==['download']:
+                elif link.get('class') == ['download'] and link.a is not None:
                     audio_link=link.a['href']
-
-
-            print(f"Processing episode: {audio_link} and {transcript_link}")
+                else:
+                    continue
 
             # Download the audio file
-            audio_filename = os.path.basename(episode_name+'.mp3')
-            audio_filepath = os.path.join('this_american_life', audio_filename)
-            if not os.path.exists(audio_filepath) or os.path.getsize(audio_filepath):
-                audio_response = requests.get(audio_link)
-                with open(audio_filepath, 'wb') as audio_file:
-                    audio_file.write(audio_response.content)
+            if 'audio_link' in locals() and 'transcript_link' in locals():
+                print(f"Processing episode: {audio_link} ")
+                audio_filename = os.path.basename(episode_name + '.mp3')
+                audio_filepath = os.path.join('this_american_life', audio_filename)
+                if not os.path.exists(audio_filepath) or os.path.getsize(audio_filepath):
+                    audio_response = requests.get(audio_link)
+                    with open(audio_filepath, 'wb') as audio_file:
+                        audio_file.write(audio_response.content)
 
-            else:
-              print(f"{audio_filepath} already exists, skipped")
+                else:
+                    print(f"{audio_filepath} already exists, skipped")
 
             # Download the transcript file
             #print(transcript_content)
-            transcript_filename = os.path.basename(episode_name+'.html')
-            transcript_filepath = os.path.join('this_american_life', transcript_filename)
-            if not os.path.exists(transcript_filepath) or os.path.getsize(transcript_filepath):
-                transcript_response = requests.get(transcript_link)
-                transcript_soup = BeautifulSoup(transcript_response.text, 'html.parser')
-                iframe = transcript_soup.find_all('iframe',id="odh-popup")
-                for item in iframe:
-                    item.decompose()
-                footer=transcript_soup.find_all('footer',id="footer")
-                for item in footer:
-                    item.decompose()
-                header=transcript_soup.find_all('header',id="site-header",role="banner")
-                for item in header:
-                    item.decompose()
-                player=transcript_soup.find_all('div',id="player")
-                for item in player:
-                    item.decompose()
-                meta=transcript_soup.find_all('div',class_="transcript__meta")
-                for item in meta:
-                    item.decompose()
-                script=transcript_soup.find_all('script')
-                for item in script:
-                    item.decompose()
-                href=transcript_soup.find_all('a')
-                for item in href:
-                    del item['href']
-                with open(transcript_filepath, 'w') as transcript_file:
-                    transcript_file.write(transcript_soup.prettify())
+                print(f"Processing episode: {transcript_link} ")
+                transcript_filename = os.path.basename(episode_name + '.html')
+                transcript_filepath = os.path.join('this_american_life', transcript_filename)
+                if not os.path.exists(transcript_filepath) or os.path.getsize(transcript_filepath):
+                    transcript_response = requests.get(transcript_link)
+                    transcript_soup = BeautifulSoup(transcript_response.text, 'html.parser')
+                    iframe = transcript_soup.find_all('iframe', id="odh-popup")
+                    for item in iframe:
+                        item.decompose()
+                    footer = transcript_soup.find_all('footer', id="footer")
+                    for item in footer:
+                        item.decompose()
+                    header = transcript_soup.find_all('header', id="site-header", role="banner")
+                    for item in header:
+                        item.decompose()
+                    player = transcript_soup.find_all('div', id="player")
+                    for item in player:
+                        item.decompose()
+                    meta = transcript_soup.find_all('div', class_="transcript__meta")
+                    for item in meta:
+                        item.decompose()
+                    script = transcript_soup.find_all('script')
+                    for item in script:
+                        item.decompose()
+                    href = transcript_soup.find_all('a')
+                    for item in href:
+                        del item['href']
+                    with open(transcript_filepath, 'w') as transcript_file:
+                        transcript_file.write(transcript_soup.prettify())
 
-
-            else:
-              print(f"{transcript_filepath} already exists, skipped")
-            print(f"Downloaded: {audio_filename} and {transcript_filename}")
+                else:
+                    print(f"{transcript_filepath} already exists, skipped")
+                    print(f"Downloaded: {audio_filename} and {transcript_filename}")
 
 print("Scraping completed.")
