@@ -21,9 +21,9 @@ for n in range(1,10):
         episode_soup= bs4.BeautifulSoup(episode_response.text,'html.parser')
         #dom = etree.HTML(str(episode_soup))
         dom = html.fromstring(episode_response.content)
-        epsode_id = dom.xpath('/html/body/div[2]/div/div/div[1]/main/article/@id')[0]
+        date = episode_soup.find('meta', attrs={'property': 'article:published_time'})['content'].split('T')[0]
         audio_link = dom.xpath('/html/body/div[2]/div/div/div[1]/main/article/div/div/figure/audio[last()]/@src')[0]
-        audio_file_path = f'hidden_brain/{epsode_id}_{episode_title}.mp3'
+        audio_file_path = f'hidden_brain/{date}-{episode_title}.mp3'
         if not os.path.exists(audio_file_path) or os.path.getsize(audio_file_path) == 0 :
             with requests.get(audio_link,stream=True) as r:
                 r.raise_for_status()
@@ -34,7 +34,7 @@ for n in range(1,10):
         else:
             print(f'{audio_file_path} already exists')
         if episode_soup.find('div',attrs={'id':'ub-content-toggle-panel-0-transcript','role':'region'}):
-            transcript_file_path = f'hidden_brain/{epsode_id}_{episode_title}.txt'
+            transcript_file_path = f'hidden_brain/{date}-{episode_title}.txt'
             transcript_content=episode_soup.find('div',attrs={'id':'ub-content-toggle-panel-0-transcript','role':'region'})
             transcript_title=episode_soup.find('h1',attrs={'class':'entry-title','itemprop':'headline'}).get_text()
             #transcript_content=dom.xpath('/html/body/div[2]/div/div/div[1]/main/article/div/div/div[1]/div/div[2]')[0]
