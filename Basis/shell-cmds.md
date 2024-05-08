@@ -181,7 +181,7 @@ Shell Commands and Tips
     cd nv-codec-headers && sudo make install && cd –
     ```
 
-- re-compile ffmpeg
+    - re-compile ffmpeg
 
     ```sh
     git clone https://git.ffmpeg.org/ffmpeg.git ffmpeg
@@ -192,22 +192,27 @@ Shell Commands and Tips
     sudo make install
     ```
 
-- use ffmpeg to covert media files
+    - use ffmpeg to covert media files
 
-  ```sh
-  ffmpeg -hwaccel cuda   -i input-video.webm -i input-audio.webm  -c:v h264_nvenc -c:a libmp3lame output.mp4
-  ```
+      ```sh
+      ffmpeg -hwaccel cuda   -i input-video.webm -i input-audio.webm  -c:v h264_nvenc -c:a libmp3lame output.mp4
+      ```
 
-- use ffmpeg to embed subtitles and audio
+    - use ffmpeg to embed subtitles and audio
 
-  ```sh
-    ffmpeg -i video.mp4 -i audio.m4a  -i subtitles.srt -c:v copy -c:a copy  -c:s mov_text output.mp4
-  ```
+      ```sh
+        ffmpeg -i video.mp4 -i audio.m4a  -i subtitles.srt -c:v copy -c:a copy  -c:s mov_text output.mp4
+      ```
 
-  - `-c:v copy` and  `-c:a copy`: keep encoder same as original for  audio and video, multiple audio files, we use `-c:a:0 copy` for the first audio, `-c:a:1 copy` for the second audio
-  - `-c:s mov_text`: set the subtitle encoder to mov_text, if have multiple subtitles, use `-metadata:s:s:0 language=eng`: set first subtitile language as eng and `-metadata:s:s:1 language=chn`: set second subtitile language as chn
+      - `-c:v copy` and  `-c:a copy`: keep encoder same as original for  audio and video, multiple audio files, we use `-c:a:0 copy` for the first audio, `-c:a:1 copy` for the second audio
+      - `-c:s mov_text`: set the subtitle encoder to mov_text, if have multiple subtitles, use `-metadata:s:s:0 language=eng`: set first subtitile language as eng and `-metadata:s:s:1 language=chn`: set second subtitile language as chn
+    - use ffmpeg to extract audio from vidio files
 
-1. mpv with hardware acceleration, modify or create `/.config/mpv/mpv.conf`
+      ```sh
+      ffmpeg -i input.avi -map 0:a -c:a libmp3lame output.mp3
+      ```
+
+7. mpv with hardware acceleration, modify or create `/.config/mpv/mpv.conf`
 
     ```
     vo=gpu
@@ -221,7 +226,7 @@ Shell Commands and Tips
     hwdec=nvdec-copy
     ```
 
-2. for loop to deal with files with spaces in names in
+8. for loop to deal with files with spaces in names in
 
 - in zsh
 
