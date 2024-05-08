@@ -211,6 +211,14 @@ Shell Commands and Tips
       ```sh
       ffmpeg -i input.avi -map 0:a -c:a libmp3lame output.mp3
       ```
+      or
+      ```sh
+      ffmpeg -i input.avi -vn -c:a libmp3lame  output.mp3
+      ```
+      or
+      ```
+      ffmpeg -i input.avi -map 0:a -acodec libmp3lame output.mp3
+      ```
 
 7. mpv with hardware acceleration, modify or create `/.config/mpv/mpv.conf`
 
