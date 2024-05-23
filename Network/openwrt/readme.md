@@ -2,14 +2,16 @@
 
 
 ## enable dockerd use nftables instead of iptables
-1. add docker bridge to the covered_devices in firewall: Network ---> Firewall ---> Zones ----> docker ---> Edit ---> Advanced Settings ---> Covered devices -----> choose docker0  ----> SAVE; then SAVE & APPLY
-2. Set `option iptables '0'` in /etc/config/dockerd
-3. flush iptables
+- add docker bridge to the covered_devices in firewall: Network ---> Firewall ---> Zones ----> docker ---> Edit ---> Advanced Settings ---> Covered devices -----> choose docker0  ----> SAVE; then SAVE & APPLY
+- enable docker to forward to wan, Network ---> Firewall ---> Zones ----> docker ---> Edit ---> Allow forward to destination zones: ---> add wan
+
+- Set `option iptables '0'` in /etc/config/dockerd
+-  flush iptables
   ```
   iptables -F
   iptables -t nat -F
   ```
-4. if using docker compose, set `network_mode: bridge` in docker-compose.yml
+- if using docker compose, set `network_mode: bridge` in docker-compose.yml, which uses the docker default bridge
   ```
   services:
     podfetch:
