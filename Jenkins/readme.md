@@ -116,3 +116,51 @@
 - IPSCAN
   - whitesouce(zend)
   - blackduck
+
+4. some script snips
+
+- enable dropdown list selection via active-choices-plugin
+
+    ```
+    def getnodeNameListScript = "return ${nodeNameList}"
+    def nodeSelectItem = input(
+        id: 'trNodeSelectInput',
+        message: 'Select which TR node will be proceed: ',
+        parameters: [
+            [$class: 'ChoiceParameter',
+                name: 'TRNodeSelect',
+                description: 'Select tr node for processing',
+                choiceType: 'PT_SINGLE_SELECT',  // here we can use PT_CHECKBOX or PT_MULTI_SELECT OR
+                filterable: true, // add filter
+                script: [
+                    $class: 'GroovyScript',
+                    fallbackScript: [
+                        classpath: [],
+                        sandbox: false,
+                        script: 'return ["Error"]'
+                    ],
+                    script: [
+                        classpath: [],
+                        sandbox: true,
+                        script: "${getnodeNameListScript}"
+                    ]
+                ]
+            ]
+        ]
+    )
+    ```
+
+  - choiceType: can be PT_CHECKBOX or PT_CHECKBOX or PT_MULTI_SELECT OR PT_SINGLE_SELECT, refer to https://github.com/jenkinsci/active-choices-plugin/blob/master/src/main/java/org/biouno/unochoice/AbstractUnoChoiceParameter.java
+
+  - filterable: true enable filter
+
+    - `def getnodeNameListScript = "return ${nodeNameList}"`,
+      - the srcript only contains `return` clause, `${nodeNameList}` is a string, which is `["items","item2"]`, but actually it is a string, which can be converted via
+
+        ```
+        .....
+        formattedTrListString = trNodeList.collect { "\"${it}\"" }.join(', ')
+        return "[$formattedTrNodeListString]"
+        ```
+
+    - sandbox: true:
