@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 # URL of the archive page
 for pageNum in range(0, 10):
-    url = 'https://www.thisamericanlife.org/archive?page='+str(pageNum)
+    url = 'https://www.thisamericanlife.org/archive?page=' + str(pageNum)
     print(f"Processing page: {url}")
     # Create a folder to save the audio and transcript files
     os.makedirs('this_american_life', exist_ok=True)
@@ -11,32 +11,32 @@ for pageNum in range(0, 10):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
     }
-    #Send a GET request to the archive page
-    response = requests.get(url,allow_redirects=True,headers=headers,verify=False)
+    # Send a GET request to the archive page
+    response = requests.get(url, allow_redirects=True, headers=headers, verify=False)
     soup = BeautifulSoup(response.text, 'html.parser')
 
     # Find the episode container
-    episode_container = soup.find('body').find('div', attrs={'id':'content'}).find('main', attrs={'id':'main'}).find('div', attrs={'class':'region region-content'}).find('div', attrs={'id':'block-system-main'}).find('div', attrs={'class':'content'})
+    episode_container = soup.find('body').find('div', attrs={'id': 'content'}).find('main', attrs={'id': 'main'}).find('div', attrs={'class': 'region region-content'}).find('div', attrs={'id': 'block-system-main'}).find('div', attrs={'class': 'content'})
 
     # Find all the episode articles in the container
     episode_articles = episode_container.find_all('article')
 
     for article in episode_articles:
         # Find the episode audio link
-        #article_links = article.find('div', id='content').find('main', id='main').find('div', class_='region region-content').find('div', id='block-system-main').find('div', class_='content').find('article').find('header',class_='episode-header').find('div',class_='container clearfix').find('ul',class_='actions').find('li')
-        episode_href=article.find('header',class_='clearfix').find('a')['href']
-        episode_link='https://www.thisamericanlife.org'+episode_href
-        episode_name=episode_href[1:].replace('/','-')
+        # article_links = article.find('div', id='content').find('main', id='main').find('div', class_='region region-content').find('div', id='block-system-main').find('div', class_='content').find('article').find('header',class_='episode-header').find('div',class_='container clearfix').find('ul',class_='actions').find('li')
+        episode_href = article.find('header', class_='clearfix').find('a')['href']
+        episode_link = 'https://www.thisamericanlife.org' + episode_href
+        episode_name = episode_href[1:].replace('/', '-')
         print(f"processing epsode: {episode_link}")
         episode_response = requests.get(episode_link)
         episode_soup = BeautifulSoup(episode_response.text, 'html.parser')
-        if episode_soup.find_all('header',attrs={'class':'episode-header'}):
-            article_links = episode_soup.find_all('header',attrs={'class':'episode-header'})[0].find('div',attrs={'class':'container clearfix'}).find('ul',attrs={'class':'actions'}).find_all('li')
+        if episode_soup.find_all('header', attrs={'class': 'episode-header'}):
+            article_links = episode_soup.find_all('header', attrs={'class': 'episode-header'})[0].find('div', attrs={'class': 'container clearfix'}).find('ul', attrs={'class': 'actions'}).find_all('li')
             for link in article_links:
                 if link.find_all('span', attrs={'class': 'icon icon-transcript', }):
-                    transcript_link="https://www.thisamericanlife.org"+link.a['href']
+                    transcript_link = "https://www.thisamericanlife.org" + link.a['href']
                 elif link.get('class') == ['download'] and link.a is not None:
-                    audio_link=link.a['href']
+                    audio_link = link.a['href']
                 else:
                     continue
 
@@ -54,7 +54,7 @@ for pageNum in range(0, 10):
                     print(f"{audio_filepath} already exists, skipped")
 
             # Download the transcript file
-            #print(transcript_content)
+            # print(transcript_content)
                 print(f"Processing transript: {transcript_link} ")
                 transcript_filename = os.path.basename(episode_name + '.html')
                 transcript_filepath = os.path.join('this_american_life', transcript_filename)
