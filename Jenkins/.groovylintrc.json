@@ -1,35 +1,95 @@
 {
   "extends": "recommended",
   "rules": {
-    "convention.CompileStatic": "off",
-    "convention.NoDef": "off",
-    "convention.VariableTypeRequired": "off",
-    "convention.MethodReturnTypeRequired": "off",
-    "convention.TrailingComma": "off",
-    "dry.DuplicateStringLiteral": "off",
-    "exceptions.CatchThrowable": "off",
+    "convention.CompileStatic": {
+      "severity": "off",
+      "enabled":false
+    },
+    "convention.NoDef": {
+      "severity": "off",
+      "enabled":false
+    },
+    "convention.VariableTypeRequired": {
+      "severity": "off",
+      "enabled":false
+    },
+    "convention.MethodReturnTypeRequired": {
+      "severity": "off",
+      "enabled":false
+    },
+    "convention.TrailingComma": {
+      "severity": "off",
+      "enabled":false
+    },
+    "dry.DuplicateStringLiteral": {
+      "severity": "off",
+      "enabled":false
+    },
+    "exceptions.CatchThrowable": {
+      "severity": "off",
+      "enabled":false
+    },
     "formatting.Indentation": {
       "spacesPerIndentLevel": 4,
       "severity": "info"
     },
-    "formatting.SpaceAroundMapEntryColon": "off",
-    "formatting.SpaceAroundOperator":"off",
+    "formatting.SpaceAroundMapEntryColon": {
+      "severity": "off",
+      "enabled":false
+    },
+    "formatting.SpaceAroundOperator":{
+      "severity": "off",
+      "enabled":false
+    },
     "formatting.LineLength": "off",
-    "groovyism.ExplicitCallToEqualsMethod": "off",
-    "groovyism.GStringExpressionWithinString": "off",
-    "naming.VariableName": "off",
-    "naming.FactoryMethodName": "off",
+    "groovyism.ExplicitCallToEqualsMethod": {
+      "severity": "off",
+      "enabled":false
+    },
+    "groovyism.GStringExpressionWithinString": {
+      "severity": "off",
+      "enabled":false
+    },
+    "naming.VariableName": {
+      "severity": "off",
+      "enabled":false
+    },
+    "naming.FactoryMethodName": {
+      "severity": "off",
+      "enabled":false
+    },
     "size.NestedBlockDepth": {
       "maxNestedBlockDepth": 10
     },
-    "unnecessary.UnnecessaryReturnKeyword": "off",
-    "UnnecessaryReturnKeyword": "off",
-    "unnecessary.UnnecessaryGetter": "off",
-    "unused.UnusedArray": "error",
-    "unused.UnusedObject": "error",
-    "unused.UnusedPrivateField": "error",
-    "unused.UnusedPrivateMethod": "error",
-    "unused.UnusedPrivateMethodParameter": "error",
-    "unused.UnusedVariable": "error"
+    "unnecessary.UnnecessaryReturnKeyword": {
+      "severity": "off",
+      "enabled":false
+    },
+    "UnnecessaryReturnKeyword": {
+      "severity": "off",
+      "enabled":false
+    },
+    "unnecessary.UnnecessaryGetter": {
+      "severity": "off",
+      "enabled":false
+    },
+    "unused.UnusedArray": {
+      "severity": "error"
+    },
+    "unused.UnusedObject": {
+      "severity": "error"
+    },
+    "unused.UnusedPrivateField": {
+      "severity": "error"
+    },
+    "unused.UnusedPrivateMethod": {
+      "severity": "error"
+    },
+    "unused.UnusedPrivateMethodParameter": {
+      "severity": "error"
+    },
+    "unused.UnusedVariable": {
+      "severity": "error"
+    }
   }
 }
