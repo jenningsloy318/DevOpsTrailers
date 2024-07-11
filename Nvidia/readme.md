@@ -1,9 +1,14 @@
-nvidia-docker
+
+# nvidia-docker
+
 ---
 
 1. nvidia-cuda docker image
-   1. docker pull nvidia/cuda:12.1.0-devel-ubuntu18.04
-   2. docker pull nvidia/cuda:12.1.0-devel-ubuntu20.04
+
+   ```sh
+   docker pull nvidia/cuda:12.1.0-devel-ubuntu18.04
+   docker pull nvidia/cuda:12.1.0-devel-ubuntu20.04
+   ```
 
 2. nvidia-toolkit <https://github.com/NVIDIA/nvidia-docker>
    - installation
@@ -15,12 +20,12 @@ nvidia-docker
 
     Edit `/etc/nvidia-container-runtime/config.toml` and disable cgroups:
 
-    ```
+    ```conf
     no-cgroups = true
     ```
 
 3. run nvidia docker
 
-   ```
+   ```sh
    docker run --privileged --gpus all nvidia/cuda:12.1.0-devel-ubuntu20.04 nvidia-smi
     ```

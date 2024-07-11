@@ -1,4 +1,4 @@
-# Usefull APP
+# Useful APP
 
 Island 炼妖壶，或者类似软件，大多数国产应用都关在里面，不能自启，不能访问主系统的图片和文件，需要访问文件，用 FX Explorer 分享进去。
 

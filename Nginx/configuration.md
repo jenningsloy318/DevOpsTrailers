@@ -1,7 +1,6 @@
-Configuration of Nginx 
----
+# Configuration of Nginx
 
-### 1. Configure default_server
+## Configure default_server
 
  for the listen and server, a default server must be set, as when configure redirect, it will not affect all virtual hosts.
 
@@ -28,10 +27,11 @@ This is a default server, which set to `default_server` .
         }
 ```
 
-### 2. Configure  nginx-module-vts
-As module `nginx-module-vts` is added into nginx when complilation, so it shoud be configured. 
+## Configure  nginx-module-vts
 
-besides in  [Configure default_server](#1-Configure-default_server) configured the `location /metrics `,this will expose prometheus format metrics under `/metrics`, then we can monitor it via prometheus. we will also add `vhost_traffic_status_zone;` under `http`.
+As module `nginx-module-vts` is added into nginx when complilation, so it shoud be configured.
+
+besides in  [Configure default_server](#1-Configure-default_server) configured the `location /metrics`,this will expose prometheus format metrics under `/metrics`, then we can monitor it via prometheus. we will also add `vhost_traffic_status_zone;` under `http`.
 
 ```conf
 
@@ -48,7 +48,7 @@ events {
 
 
 http {
-  
+
     vhost_traffic_status_zone;
     include       mime.types;
     default_type  application/octet-stream;
@@ -75,13 +75,15 @@ http {
     include /etc/nginx/conf.d/*.conf;
 }
 ```
+
 the whole configureation we can reference [nginx-module-vts home page](https://github.com/vozlt/nginx-module-vts).
 
-### 3. Configure  nginx_upstream_check_module
+## Configure  nginx_upstream_check_module
 
 `nginx_upstream_check_module` is used in `upstream` to check the upstream server health status
 
 As default, we can add following entity to upstream for normal nginx or grafana backends:
+
 ```conf
         check interval=3000 rise=2 fall=5 timeout=1000 type=http;
         check_keepalive_requests 100;
@@ -90,26 +92,28 @@ As default, we can add following entity to upstream for normal nginx or grafana 
 ```
 
 but for some backend applications this setting is not woring, we can use following settings:
-```
+
+```conf
         check interval=3000 rise=2 fall=5 timeout=1000 type=http;
         check_keepalive_requests 100;
         check_http_send "HEAD / HTTP/1.1\r\nConnection: keep-alive\r\n\r\n";
         check_http_expect_alive http_2xx http_3xx http_4xx;
 ```
 
-if http check is not applicable, we only have to use `tcp` check 
+if http check is not applicable, we only have to use `tcp` check
 
-```
+```conf
         check interval=3000 rise=2 fall=5 timeout=1000 type=tcp;
         check_keepalive_requests 100;
 ```
 
 and as configured in  [Configure default_server](#1-Configure-default_server), `location /status` also display upstream health status under `/status`
 
-### 4. Configure redirect root to subpath
+### Configure redirect root to subpath
 
 sometimes, when we access a root url, we want it to be redirect to its subpath, then we can use folloing redirect (301 redirect):
-```
+
+```conf
 
     location = / {
       return 301 http://{{dev_server_name}}/hac;
@@ -129,11 +133,11 @@ sometimes, when we access a root url, we want it to be redirect to its subpath, 
 
 As example above, when access https://dev_server_name/, it will redirect to https://dev_server_name/hac
 
-### 5. Force redirect http to https
+### Force redirect http to https
 
 sometime, when the backend it http, nginx serve as https. when access root path of the domain with https is ok, but when access to subpath, it will redirect to http as the backend is http. so the it is to configure the force http to https redirect
 
-```
+```conf
 server {
     listen 80;
     server_name  {{artifactory_server_name}};
@@ -155,25 +159,25 @@ server {
       proxy_next_upstream  http_502 http_504 http_404 error timeout invalid_header;
       proxy_pass           http://artifactory_upstream;
     }
-}  
+}
 ```
 
-### 5. Redirect specified subpath to other url
+### Redirect specified subpath to other url
 
 sometimes, insdie a domain we can redirect do other url
 
-```
+```conf
     location ~ ^/(metrics|status) {
         return 301 http://$Host$request_uri;
-    }    
+    }
 ```
 
 As above, for `/metrics` and `/status`, it will rediect to default_server.
 
-
-## 6. Configure to use ldap auth 
+## Configure to use ldap auth
 
  add following snip to `/etc/nginx/nginx.conf` before line `include /etc/nginx/conf.d/*.conf;`, so each other vhost can utilize this ldap setting
+
  ```conf
     ldap_server ad_1 {
       # user search base.
@@ -201,8 +205,10 @@ As above, for `/metrics` and `/status`, it will rediect to default_server.
       ssl_ca_file /etc/openldap/cacerts/cacert.asc;
     }
 ```
+
 then add following lines to vhost conf if retuired, above the location directives
-```
+
+```conf
     auth_ldap "Forbidden";
     auth_ldap_servers ad_1;
 ```

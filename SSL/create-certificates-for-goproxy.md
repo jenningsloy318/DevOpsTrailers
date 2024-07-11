@@ -1,9 +1,8 @@
-certs for goproxy
----
+# certs for goproxy
 
-1. Create CA
+## Create CA
 
-* create ca.config
+- create ca.config
 
 ```conf
 [ req ]
@@ -27,18 +26,18 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 
 ```
 
-* create CA
+- create CA
 
-```
+```sh
 openssl genrsa -aes256 -passout pass:xxx -out ca.pass.key 4096
 openssl rsa -passin pass:xxxx -in ca.pass.key -out ca.key
 openssl req -new -x509 -days 3650 -key ca.key   -config ca.config -out ca.pem
 
 ```
 
-2. client cert
+## Create client cert
 
-* create csr.conf
+- create csr.conf
 
 ```conf
 
@@ -67,9 +66,9 @@ IP.1 = {IP}
 
 ```
 
-* generate key
+- generate key
 
-```
+```sh
 openssl genrsa -aes256 -passout pass:xxx -out client.pass.key 4096
 openssl rsa -passin pass:xxx -in client.pass.key -out client.key
 openssl req -new -key client.key -out client.csr -config openssl-client.conf

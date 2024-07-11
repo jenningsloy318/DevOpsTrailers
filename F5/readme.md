@@ -1,5 +1,7 @@
+# Configure F5
 
-Configure WAF:
+## Configure WAF
+
 ```sh
 tmsh create net trunk external-trunk interfaces add { 1.1  }
 
@@ -17,7 +19,8 @@ tmsh create net self internal-vlan132-self-ip-floating { address 10.36.48.147/25
 ```
 
 
-Configure TM:
+## Configure TM
+
 ```sh
 tmsh create net trunk internal-trunk interfaces add { 1.1  }
 

@@ -1,20 +1,27 @@
-Add Linux host to Azure Active Directory
----
+# Add Linux host to Azure Active Directory
+
 
 - Install requred packages
-```
+
+```sh
 dnf install -y realmd sssd adcli krb5-workstation krb5-libs oddjob oddjob-mkhomedir samba-common-tools
 ```
+
 - Dicover the domain
-```
+
+```sh
 realm discover EXAMPLE.DOMAIN.COM
 ```
+
 - Initialize Kerberos using the kinit command
-```
+
+```sh
 kinit admin@EXAMPLE.DOMAIN.COM
 ```
+
 - Join the domain
-```
+
+```sh
 realm join --verbose --client-software=sssd EXAMPLE.DOMAIN.COM -U 'admin@EXAMPLE.DOMAIN.COM'
 ```
 

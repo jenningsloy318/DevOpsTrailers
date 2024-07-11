@@ -1,3 +1,5 @@
+# BPF
+
 1. BPF aka cBPF:
 
     BPF, as in Berkeley Packet Filter, was initially conceived in 1992 so as to provide a way to filter packets and to avoid useless packet copies from kernel to userspace. It initially consisted in a simple bytecode that is injected from userspace into the kernel, where it is checked by a verifier—to prevent kernel crashes or security issues—and attached to a socket, then run on each received packet. It was ported to Linux a couple of years later, and used for a small number of applications (tcpdump for example). The simplicity of the language as well as the existence of an in-kernel Just-In-Time (JIT) compiling machine for BPF were factors for the excellent performances of this tool.
@@ -10,6 +12,7 @@
     - Small, in-kernel VM. Register based, witch dispathc interpreter, few instructions
 
 2. eBPF:
+
     Then in 2013, Alexei Starovoitov completely reshaped it, started to add new functionalities and to improve the performances of BPF. This new version is designated as eBPF (for “extended BPF”), while the former becomes cBPF (“classic” BPF). New features such as maps and tail calls appeared. The JIT machines were rewritten. The new language is even closer to native machine language than cBPF was. And also, new attach points in the kernel have been created.
 
 
@@ -22,22 +25,23 @@
     - Bytecode compilation upstream in LLVM/Clang
 
 
-    2.1 BPF use cases 
+    2.1 BPF use cases
     - forwarding data: recently BPF improvements called “Sockmap” that we have upstreamed into the Linux kernel, which secure redirection at the socket layer itself.  cilium used this feature
 
     - filtering:  previous iptables focus on packets, IP addresses, and ports, and BPF instead treating service identity and API protocols (e.g., HTTP, gRPC, and Kafka) as first-class citizens in the platform for filtering .  ----> for security area, take cilium for example
-    
+
     - visibility: can be used to construct the monitoring and tracing applications, for example BCC
 
 
 
     2.2 other projects based on BPF
+
     Some others, such as CETH(Common Ethernet Driver Framework), Cilium, are entirely based on it. BPF is buzzing, so we can expect a lot of tools and projects to orbit around it soon
 
     2.3 Uage of BPF program
         ![bpf program usage](./imgs/bpf-program-usage.jpg)
         ![bpf program usage2](./imgs/bpf-program-usage2.jpg)
-    
+
 
  3. XDP
 
@@ -46,7 +50,7 @@
     XDP is a framework for running BPF in the driver.
 
     3.1 XDP Feature
-    - The XDP packet process includes an in kernel component that processes RX packet-pages directly out of driver via a functional interface without early allocation of skbuff’s or software queues. 
+    - The XDP packet process includes an in kernel component that processes RX packet-pages directly out of driver via a functional interface without early allocation of skbuff’s or software queues.
     - BPF programs performs processing such as packet parsing, table look ups, creating/managing stateful filters, encap/decap packets, etc.
 
 
@@ -62,7 +66,7 @@
 
     ![network data flow processing](./imgs/ebpf-modules1.png)
     The key difference here being that eBPF adds an additional hook in driver space. This hook is called eXpress DataPath, or XDP. This allows users to drop, reflect or redirect packets before they have an skb (socket buffer) metadata structure added to the packet
-    
+
     Offloading eBPF to the NFP
     Back in 4.9,  Network Flow Processor (NFP) BPF JIT-compiler  is added to the kernel, initially for cls_bpf (https://www.spinics.net/lists/netdev/msg379464.html).Through the NFP JIT, we have managed to effectively modify the program flow as shown in the diagram below:
     ![network data flow processing](./imgs/ebpf-modules2.png)
@@ -100,11 +104,11 @@
 
 
 
-4. 
+4.
 
 3. BPF  links
     - https://github.com/iovisor/bcc
     - https://github.com/iovisor/bpf-docs
-    - 
+    -
 
 

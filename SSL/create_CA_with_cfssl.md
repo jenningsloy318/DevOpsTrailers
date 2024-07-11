@@ -1,5 +1,8 @@
+# cfSSL CA
+
 1. create  /etc/cfssl/csr_ca.json
-    ```
+
+    ```sh
     cat /etc/cfssl/csr_ca.json
     {
       "CN": "Suning sports internal CA",
@@ -18,20 +21,26 @@
         ]
     }
     ```
+
 2. Create CA
-    ```
+
+    ```sh
     cfssl gencert -initca  /etc/cfssl/csr_ca.json | cfssljson -bare /etc/cfssl/ca
     ```
 
-3. create auth_key 
-    ```
+3. create auth_key
+
+    ```sh
     hexdump -n 16 -e '4/4 "%08X" 1 "\n"' /dev/random
     41ED055262266AE2C9F5095BD211B7B6
     ```
+
 4. generate cert for ocsp which is used for ocsp responder, optional
-    ```
+
+    ```sh
     cfssl gencert -ca=/etc/cfssl/ca.pem -ca-key=/etc/cfssl/ca-key.pem -config=/etc/cfssl/config_ca.json -profile="ocsp" /etc/cfssl/ocsp_csr.json |cfssljson -bare /etc/cfssl/ocsp
     ```
+
 5. create /etc/cfssl/ca_config.json
 
     ```json
@@ -125,7 +134,7 @@
     ```
 
 6. chose which db backend is used, and create the table accordingly;here I chose postgresql.
-    
+
     ```sql
     CREATE TABLE certificates (
       serial_number            bytea NOT NULL,
@@ -147,15 +156,19 @@
       PRIMARY KEY(serial_number, authority_key_identifier),
       FOREIGN KEY(serial_number, authority_key_identifier) REFERENCES certificates(serial_number,   authority_key_identifier)
     );
-    ```    
+    ```
+
 7. create /etc/cfssl/db-config.json
+
     ```json
     {"driver":"postgres","data_source":"postgres://user:password@host/db"}
 
     ```
+
 8. create a certificate for cfssl api service itself
 
-    8.1 create cfssl-api.csr
+    - create cfssl-api.csr
+
     ```json
     {
         "hosts": [
@@ -175,30 +188,33 @@
           }
         ]
     }
-  
-     ```
 
-   8.2 create certificate for cfssl api
-    
+    ```
+
+    - create certificate for cfssl api
+
     ```shell
     cfssl gencert -ca /etc/cfssl/ca.pem -ca-key /etc/cfssl/ca-key.pem /etc/cfssl/client_csr.json| cfssljson -bare /etc/cfssl/cfssl-api
     ```
+
 9. launch cfssl api service
+
     ```shell
 
     [Unit]
     Description=cfssl api server
 
     [Service]
-    ExecStart=/usr/bin/cfssl serve -ca-key /etc/cfssl/ca-key.pem  -ca /etc/cfssl/ca.pem  -config    /etc/cfssl/config_ca.json  -db-config /etc/cfssl/db-config.json -address  0.0.0.0 -port 443 -tls-key   /etc/cfssl/cfssl-api-key.pem -tls-cert /etc/cfssl/cfssl-api.pem 
+    ExecStart=/usr/bin/cfssl serve -ca-key /etc/cfssl/ca-key.pem  -ca /etc/cfssl/ca.pem  -config    /etc/cfssl/config_ca.json  -db-config /etc/cfssl/db-config.json -address  0.0.0.0 -port 443 -tls-key   /etc/cfssl/cfssl-api-key.pem -tls-cert /etc/cfssl/cfssl-api.pem
 
     [Install]
     WantedBy=multi-user.target
     ```
 
-    and then start cfssl-api service 
-    ```
-    systemctl start ssl-api 
+    and then start cfssl-api service
+
+    ```sh
+    systemctl start ssl-api
 
     Mar 12 09:23:08 centos7 systemd[1]: Started cfssl api server.
     Mar 12 09:23:08 centos7 systemd[1]: Starting cfssl api server...

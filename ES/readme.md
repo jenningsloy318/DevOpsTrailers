@@ -1,8 +1,8 @@
 # Issues
 
-1. fix
+- fix
 
-    - check the cluster health
+  - check the cluster health
 
         ```json
         curl localhost:9200/_cluster/health?pretty
@@ -26,7 +26,7 @@
         ```
 
         so many unassigned_shards existed
-    - re-shards with
+  - re-shards with
 
         ```sh
         curl -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
@@ -38,7 +38,7 @@
         '
         ```
 
-    - if still not working, try
+  - if still not working, try
 
         ```sh
         curl -H 'Content-Type: application/json' -X POST -d '' localhost:9200/_cluster/reroute?retry_failed
