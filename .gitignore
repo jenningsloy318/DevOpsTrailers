@@ -12,3 +12,5 @@ ansible/roles/ansible-role-ci/files/nexus-3.7.0-04-unix.tar.gz
 Crawlers/**/
 Network/**/
 Basis/**/
+.DS_Store
+.history/
