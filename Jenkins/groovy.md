@@ -59,4 +59,4 @@
   - rule of https://codenarc.org/codenarc-rule-index.html
   - config file [.groovylintrc.json](./.groovylintrc.json) can be places
     - root directory of the repository
-    - vscode set  `groovyLint.basic.config`  to the path of the `.groovylintrc.json` file
+    - vscode set  `groovyLint.basic.config`  to the path of  `.groovylintrc.json` , in settings.json `"groovyLint.basic.config": "~/.groovylintrc.json"`
