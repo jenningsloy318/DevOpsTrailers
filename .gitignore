@@ -6,6 +6,9 @@ ansible/roles/ansible-role-ci/files/nexus-3.7.0-04-unix.tar.gz
 *.retry
 *.tar
 *.rpm
-*.tar.gz 
+*.tar.gz
 *.tar.xz
 *.log
+Crawlers/**/
+Network/**/
+Basis/**/
