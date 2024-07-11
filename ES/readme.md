@@ -4,7 +4,7 @@
 
     - check the cluster health
 
-        ```
+        ```json
         curl localhost:9200/_cluster/health?pretty
         {
         "cluster_name": "my_cluster",
@@ -28,7 +28,7 @@
         so many unassigned_shards existed
     - re-shards with
 
-        ```
+        ```sh
         curl -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
         {
             "transient" : {
@@ -40,7 +40,7 @@
 
     - if still not working, try
 
-        ```
+        ```sh
         curl -H 'Content-Type: application/json' -X POST -d '' localhost:9200/_cluster/reroute?retry_failed
         ```
 
