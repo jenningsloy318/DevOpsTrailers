@@ -56,6 +56,9 @@
 
 - lint config for groovy file
   - use [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)
+    - https://github.com/oxsecurity/megalinter/blob/main/TEMPLATES/.groovylintrc.json
+    - https://github.com/nvuillam/npm-groovy-lint/blob/main/lib/.groovylintrc-recommended-jenkinsfile.json
+    - https://github.com/nvuillam/npm-groovy-lint/blob/main/lib/.groovylintrc-recommended.json
   - rule of https://codenarc.org/codenarc-rule-index.html
   - config file [.groovylintrc.json](./.groovylintrc.json) can be places
     - root directory of the repository
