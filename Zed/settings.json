@@ -1,0 +1,94 @@
+{
+  "editor": {
+    "document_highlight": {
+      "read_background": "#f5edeb"
+    }
+  },
+  "scrollbar": {
+    "show": "auto",
+    "cursors": true,
+    "git_diff": true,
+    "search_results": true,
+    "selected_symbol": true,
+    "diagnostics": true
+  },
+  "indent_guides": {
+    "coloring": "indent_aware",
+    "line_width": 2
+  },
+  "line_indicator_format": "short",
+  "current_line_highlight": "all",
+  "theme": "Solarized Dark",
+  "buffer_font_size": 16,
+  "ui_font_size": 16,
+  "buffer_font_family": "Source Code Pro",
+  "autosave": "on_focus_change",
+  "soft_wrap": "editor_width",
+  "preferred_line_length": 200,
+  "tab_size": 2,
+  "format_on_save": "on",
+  "formatter": "language_server",
+  "remove_trailing_whitespace_on_save": true,
+  "copy_on_select": true,
+  "enable_language_server": true,
+  "ensure_final_newline_on_save": false,
+  "show_completions_on_input": true,
+  "git_status": true,
+  "auto_update": false,
+  "hour_format": "hour24",
+  "use_on_type_format": true,
+  "show_inline_completions": true,
+  "lsp": {
+    "gopls": {
+      "initialization_options": {
+        "hints": {
+          "assignVariableTypes": true,
+          "compositeLiteralFields": true,
+          "compositeLiteralTypes": true,
+          "constantValues": true,
+          "functionTypeParameters": true,
+          "parameterNames": true,
+          "rangeVariableTypes": true
+        }
+      }
+    }
+  },
+  "languages": {
+    "Markdown": {
+      "format_on_save": "on"
+    },
+    "Groovy": {
+      "enable_language_server": true,
+      "always_treat_brackets_as_autoclosed": true,
+      "format_on_save": "language_server",
+      "use_autoclose": true
+    },
+    "Go": {
+      "format_on_save": {
+        "external": {
+          "command": "gofmt",
+          "arguments": []
+        }
+      }
+    }
+  },
+  "preview_tabs": {
+    "enabled": true,
+    "enable_preview_from_file_finder": true,
+    "enable_preview_from_code_navigation": true
+  },
+  "use_autoclose": true,
+  "always_treat_brackets_as_autoclosed": true,
+  "assistant": {
+    "version": "1",
+    "provider": {
+      "name": "ollama",
+      "low_speed_timeout_in_seconds": 30
+    }
+  },
+  "terminal": {
+    "copy_on_select": true,
+    "blinking": "on",
+    "button": true
+  }
+}
