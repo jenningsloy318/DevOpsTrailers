@@ -55,15 +55,30 @@
   },
   "languages": {
     "Markdown": {
-      "format_on_save": "on"
+      "format_on_save": "on",
+      "enable_language_server": true,
+      "use_autoclose": true
     },
     "Groovy": {
+      "code_actions_on_format": {
+        "source.organizeimports": true
+      },
+      "format_on_save": {
+        "external": {
+          "command": "/usr/local/bin/npm-groovy-lint",
+          "arguments": []
+        }
+      },
       "enable_language_server": true,
       "always_treat_brackets_as_autoclosed": true,
-      "format_on_save": "language_server",
       "use_autoclose": true
     },
     "Go": {
+      "code_actions_on_format": {
+        "source.organizeimports": true
+      },
+      "enable_language_server": true,
+      "use_autoclose": true,
       "format_on_save": {
         "external": {
           "command": "gofmt",
