@@ -154,7 +154,7 @@ Shell Commands and Tips
 - ~/.config/yt-dlp/config
 
   ```config
-  -o '%(playlist_index)s - %(title)s.%(ext)s'
+  -o '%(playlist_index&01|)s-%(title)s.%(ext)s'
   --proxy socks5://localhost:38080
   -f bestvideo+bestaudio/best
   --embed-subs --write-auto-subs  --sub-langs en
@@ -162,7 +162,7 @@ Shell Commands and Tips
   --postprocessor-args "Merger+ffmpeg_i1: -hwaccel cuda"
   --postprocessor-args "Merger+ffmpeg_o1:  -c:v h264_nvenc -c:a libmp3lame"
   ```
-
+  > -o '%(playlist_index&01|)s - %(title)s.%(ext)s', if the index dosen't exist, use `01` for prefix as index
   > since postprocess will invoke ffmpeg, I recompiled ffmpeg with nvidia hardware accelerate enabaled.
   >
 
