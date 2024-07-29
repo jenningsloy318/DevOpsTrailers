@@ -154,7 +154,7 @@ Shell Commands and Tips
 - ~/.config/yt-dlp/config
 
   ```config
-  -o '%(playlist_index&01|)s-%(title)s.%(ext)s'
+  -o '%(playlist_index|01)s-%(title)s.%(ext)s'
   --proxy socks5://localhost:38080
   -f bestvideo+bestaudio/best
   --embed-subs --write-auto-subs  --sub-langs en
