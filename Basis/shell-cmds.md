@@ -219,6 +219,14 @@ Shell Commands and Tips
       ```
       ffmpeg -i input.avi -map 0:a -acodec libmp3lame output.mp3
       ```
+    - concatenating multiple files into one
+      - concatenate audio files
+        ```sh
+        ffmpeg -i audio1.mp3 -i audio2.mp3 -i audio3.mp3 -filter_complex "[0:a][1:a][2:a]concat=n=3:v=0:a=1" output.mp3
+        ```
+        > - `[0:a][1:a][2:a]` map the input files
+        > - The tracks are joined using the concat filter. When we specify `v=0:a=1`, we are telling the concat filter that there are no video streams to merge, only audio streams.
+        > - `concat=n=3` set the input files number
 
 7. mpv with hardware acceleration, modify or create `/.config/mpv/mpv.conf`
 
