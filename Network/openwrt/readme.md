@@ -28,3 +28,10 @@
       environment:
       ....
   ```
+- set env in init scripts, for example in /etc/init.d/dockerd
+
+  ```
+  procd_set_param env HTTPS_PROXY=socks5://localhost:38080
+  ```
+
+  > since  procd_set_param can also set env, we can set it in this way.
