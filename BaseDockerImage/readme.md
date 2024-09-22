@@ -14,7 +14,7 @@
   livemedia-creator --make-tar --no-virt --ks=fedora-container.ks   --image-name=fedora-base.tar
   ```
 
-  the file will be created as  /var/tmp/fedora-base.tar
+  the file will be created as  `/var/tmp/fedora-base.tar`
 
 - use a [Dockerfile](./Dockerfile) to create a further docker image
 
@@ -29,3 +29,4 @@
   ```shell
   debootstrap --arch=amd64 --variant=minbase --make-tarball=focal.tar  focal focal-root/
   ```
+  this will create the rootfs in `focal-root/`
