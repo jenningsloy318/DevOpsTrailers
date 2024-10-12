@@ -227,6 +227,42 @@ Shell Commands and Tips
         > - `[0:a][1:a][2:a]` map the input files
         > - The tracks are joined using the concat filter. When we specify `v=0:a=1`, we are telling the concat filter that there are no video streams to merge, only audio streams.
         > - `concat=n=3` set the input files number
+    - Merge multiple audio and subtitles
+      - we have a backagroud audio, and and orginal voice and translated voice, we will combine them
+      ```sh
+      video_file="output/output_video_with_subs.mp4"
+      background_file='output/audio/background.wav'
+      original_vocal='output/audio/original_vocal.wav'
+      original_subtitle='output/audio/original_subtitle.srt'
+      trans_vocal="output/trans_vocal_total.wav"
+      trans_subtitle="output/trans_subtitle.srt"
+      output_file="output/output_video_with_audio-2.mp4"
+
+      ffmpeg -y \
+      -i ${video_file} \
+      -i ${background_file} \
+      -i ${original_vocal} \
+      -i ${trans_vocal} \
+      -i ${original_subtitle}, \
+      -i ${trans_subtitle}, \
+      -metadata:s:s:0 title=English  \
+      -metadata:s:s:0 language=eng \
+      -metadata:s:s:1 title=Chinese \
+      -metadata:s:s:1  language=chn \
+      -filter_complex \
+      "[1:a]volume=1[a1]; \
+      [2:a]volume=1.5[a2]; \
+      [1:a]volume=1[a3]; \
+      [3:a]volume=1.5[a4]; \
+      [a1][a2]amerge=inputs=2[en]; \
+      [a3][a4]amerge=inputs=2[cn]" \
+      -map 0:v -map "[en]" -map "[cn]" \
+      -map 4:s -map 5:s -c:s mov_text \
+      -c:v copy -c:a aac -b:a 192k \
+      ${output_file}
+      ```
+
+
 
 7. mpv with hardware acceleration, modify or create `/.config/mpv/mpv.conf`
 
