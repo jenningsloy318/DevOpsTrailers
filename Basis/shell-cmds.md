@@ -297,3 +297,8 @@ Shell Commands and Tips
     ls -l "$file"
   done
   ```
+  
+  also get the exact file name without extension
+  ```
+  file_name="$(basename "$fullpath" .txt)"
+  ```
