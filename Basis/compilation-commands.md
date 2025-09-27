@@ -1,4 +1,5 @@
-# cmake
+# Tools used in software compilation
+## cmake
 
 - build and install
 
@@ -14,3 +15,12 @@
    ```sh
    xargs rm < install_manifest.txt
     ```
+
+## meson 
+
+- build and install
+  ```sh
+  meson setup build --prefix=/usr --reconfigure
+  meson compile -C build
+  sudo meson install -C build
+  ```
